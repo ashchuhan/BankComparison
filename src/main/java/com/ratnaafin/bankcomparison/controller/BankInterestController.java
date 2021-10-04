@@ -79,8 +79,8 @@ public class BankInterestController {
 			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	        String date = bankComparison.getLoanStartDate();
 	        LocalDate startDate = LocalDate.parse(date, dateFormat);
-	        int startMonth = startDate.getMonthValue();
-	        startDate = startDate.withMonth(startMonth).withDayOfMonth(1);
+	        //int startMonth = startDate.getMonthValue();
+	        //startDate = startDate.withMonth(startMonth).withDayOfMonth(1);
 	        LocalDate currentDateStart = startDate;
 	        List<String> interestSequenceDate = new ArrayList<>();
 	        
@@ -168,12 +168,13 @@ public class BankInterestController {
 			@RequestParam(value = "repaymentToBank") double[] repayBank,
 			@RequestParam(value = "advancedCollection") double[] advancedCollection,
 			@RequestParam(value = "collectionAmnt") double collectionAmnt,
+			@RequestParam(value = "cumulativeCollection") double[] cumulativeCollection,
 			@RequestParam(value = "interestType") String interestType,
 			@RequestParam(value = "cutbackFromAmount") double[] cutbackFromAmount,
 			@RequestParam(value = "cutbackToAmount") double[] cutbackToAmount,
 			@RequestParam(value = "cutbackRatio") double[] cutbackRatio) {
 		
-		saveBankAdvanceInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType, cutbackFromAmount, cutbackToAmount, cutbackRatio);
+		saveBankAdvanceInterest(customerId, comparisonId, date, principalAmnt, repayBank,advancedCollection, collectionAmnt,cumulativeCollection, interestType, cutbackFromAmount, cutbackToAmount, cutbackRatio);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
 	}
 	
@@ -208,6 +209,7 @@ public class BankInterestController {
 			@RequestParam(value = "repaymentToBank") double[] repayBank,
 			@RequestParam(value = "advancedCollection") double[] advancedCollection,
 			@RequestParam(value = "collectionAmnt") double collectionAmnt,
+			@RequestParam(value = "cumulativeCollection") double[] cumulativeCollection,
 			@RequestParam(value = "interestType") String interestType,
 			@RequestParam(value = "cutbackFromAmount") double[] cutbackFromAmount,
 			@RequestParam(value = "cutbackToAmount") double[] cutbackToAmount,
@@ -221,7 +223,7 @@ public class BankInterestController {
 			}
 		}
 		deleteInterest(comparisonId, customerId, totalIntr);
-		saveBankAdvanceInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType, cutbackFromAmount, cutbackToAmount, cutbackRatio);
+		saveBankAdvanceInterest(customerId, comparisonId, date, principalAmnt, repayBank,advancedCollection, collectionAmnt,cumulativeCollection, interestType, cutbackFromAmount, cutbackToAmount, cutbackRatio);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
 	}
 	
@@ -263,7 +265,7 @@ public class BankInterestController {
 	}
 	
 	public void saveBankAdvanceInterest(Long customerId, Long comparisonId, String[] date, double[] principalAmnt,
-			double[] repayBank, double[] advancedCollection, double collectionAmnt, String interestType,
+			double[] repayBank, double[] advancedCollection, double collectionAmnt, double[] cumulativeCollection, String interestType,
 			double[] cutbackFromAmount, double[] cutbackToAmount, double[] cutbackRatio) 
 	{
 		 List<CutbackDetails> cutbackList = new ArrayList<CutbackDetails>(); 
@@ -283,7 +285,7 @@ public class BankInterestController {
 		 List<CutbackDetails> cutbackDetails = cutbackService.getCutbackDetails(comparisonId);
 		 double balance = 0;
 		 double totalInterest = 0;
-		 double cumulativeCollectionn= collectionAmnt;
+		 //double cumulativeCollectionn= collectionAmnt;
 		 for (int i = 0; i < date.length; i++) {
 				BankInterestMaster bankInterestMaster = new BankInterestMaster();
 				bankInterestMaster.setCustomerId(customerId);
@@ -292,23 +294,10 @@ public class BankInterestController {
 				bankInterestMaster.setPrincipleAmountforInterest(principalAmnt[i]);
 				bankInterestMaster.setInterestType(interestType);
 				bankInterestMaster.setAdvancedCollection(advancedCollection[i]);
-				cumulativeCollectionn = cumulativeCollectionn + advancedCollection[i];
-				bankInterestMaster.setCumulativeCollection(cumulativeCollectionn);
+				//cumulativeCollectionn = cumulativeCollectionn + advancedCollection[i];
+				bankInterestMaster.setCumulativeCollection(cumulativeCollection[i]);
+				bankInterestMaster.setRepaymentToBank(repayBank[i]);
 				
-				if(cutbackDetails != null && cutbackDetails.size() > 0) {
-					for(CutbackDetails cutbackDetail : cutbackDetails)
-					{
-						if(cutbackDetail.getCutbackFromAmount() <= cumulativeCollectionn && cutbackDetail.getCutbackToAmount() > cumulativeCollectionn) 
-						{
-							repayBank[i]=advancedCollection[i]*(cutbackDetail.getCutbackRatio()/100);
-							bankInterestMaster.setRepaymentToBank(repayBank[i]);
-						}
-						else
-						{
-							bankInterestMaster.setRepaymentToBank(repayBank[i]);
-						}
-					}
-				}
 				double balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
 				bankInterestMaster.setBalanceOutsatanding(balance_outsanding);
 				balance = balance_outsanding;

@@ -168,9 +168,15 @@ button:hover {
 						</c:forEach>
 					</tr>
 					<tr>
-						<td>Processing Fees (Rs.in lakh)</td>
+						<td>Loan Tenure in Months</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
-							<td>${tempCustomer.processingFees}</td>
+							<td>${tempCustomer.loanTenure}</td>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>Loan Tenure Start Date</td>
+						<c:forEach var="tempCustomer" items="${bankComparison}">
+							<td>${tempCustomer.loanStartDate}</td>
 						</c:forEach>
 					</tr>
 					<tr>
@@ -180,9 +186,35 @@ button:hover {
 						</c:forEach>
 					</tr>
 					<tr>
+						<td>Processing Fees (Rs.in lakh)</td>
+						<c:forEach var="tempCustomer" items="${bankComparison}">
+							<td>${tempCustomer.processingFees}</td>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>Processing Fees With GST</td>
+						<c:forEach var="tempCustomer" items="${bankComparison}">
+							<td>${tempCustomer.processingFeesGst}</td>
+						</c:forEach>
+					</tr>
+					<tr>
 						<td>Interest Rate (ROI)</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.interestRate}</td>
+
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>Consultancy Fees(Rs.in lakh)</td>
+						<c:forEach var="tempCustomer" items="${bankComparison}">
+							<td>${tempCustomer.consultancyFees}</td>
+
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>Consultancy Fees Gst</td>
+						<c:forEach var="tempCustomer" items="${bankComparison}">
+							<td>${tempCustomer.consultancyFeesGst}</td>
 
 						</c:forEach>
 					</tr>

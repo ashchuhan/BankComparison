@@ -316,7 +316,7 @@ button:hover {
 									value="${bankInterestMasterDetails.customerId}" />
 						<input type="number" name="comparisonId" hidden="true"
 									value="${bankInterestMasterDetails.comparisonId}" />
-						<input type="number" id="loanTenure" value="${loanTenure}"/>
+						<input type="number" id="loanTenure" value="${loanTenure}" hidden="true"/>
 						<table>
 							<tr>
 								<th>Month Ending On</th>
@@ -337,12 +337,6 @@ button:hover {
 						 
 						</table>
 						
-						<!-- <input type="button" value="AddRows" onclick="addRowFixed('dataTableFixed')" class="btn_medium"  id="fixedrowbtn"/> -->
-					<div>
-						
-						<table id="dataTableFixed"></table>
-							
-					</div>
 					<br><br>
 					Principle Amount Total<input type="number" name="principleAmtTotal" id="principleAmtTotal" required="required" /><br>
 					Repayment Amount Total<input type="number" name="repaymentAmtTotal" id="repaymentAmtTotal" required="required"/>
@@ -380,33 +374,55 @@ button:hover {
 								<th>Cutback To Amount</th>
 								<th>Cutback Ratio</th>
 							</tr>
+							<tr>
+								<th><input type="number" id="addcutbackFromAmount[1]" name="cutbackFromAmount" required="required"/></th>
+								<th><input type="number" id="addcutbackToAmount[1]" name="cutbackToAmount" required="required"/></th>
+								<th><input type="number" id="addcutbackRatio[1]" name="cutbackRatio" required="required"/></th>
+							</tr>
 						</table>
 						</div>
-						<br><br><br>
-						 <label style="font-weight: bold;">Loan Amount</label> 
-						 <input type="number" name="loanAmount" id="advanceLoanAmount"
+						<br>
+						<label style="font-weight: bold;">Loan Amount</label> 
+						<input type="number" name="loanAmount" id="advanceLoanAmount"
 							value="${bankComparison.loanAmount}" readonly="readonly"> <br>
+						<input type="number" id="loanTenure" value="${loanTenure}" hidden="true"/>
+							
 						<span>Collection amount till Date</span>
-						<input type="number" name="collectionAmnt" onfocus="focusData(this)" onblur="blurData(this)" value="0" id="collectionAmnt" oninput="cal()"/>
+						<input type="number" name="collectionAmnt" onfocus="focusData(this)" onblur="blurData(this)" id="collectionAmnt" oninput="cal()" required="required"/>
 						<input type="text" name="interestType" value="Advance" hidden="true" />
 						<input type="number" name="customerId" hidden="true"
 									value="${bankInterestMasterDetails.customerId}" />
 						<input type="number" name="comparisonId" hidden="true"
 									value="${bankInterestMasterDetails.comparisonId}" />
-						<span>Interest Period</span>
-						<input type="number" id="interestPeriodAdvance" />
-						<input type="button" value="Add Advance Calculation"
-									onclick="addRowAdvance('dataTableAdvance')" class="btn_medium" id="advancerowbtn"/>
 						
-							<table id="dataTableAdvance">
-							</table>
+						<table>
+							<tr>
+								<th>Month Ending On</th>
+								<th>Principal Amount</th>
+								<th>Advance Collection</th>
+								<th>Repayment to bank</th>
+							</tr>
 							
+							<c:forEach var="tempCustomer" items="${interestSequenceDate}" varStatus="theCount">
+							<tr>
+							<td><input type="date" value="${tempCustomer}" name="monthEndingOn" required="required"/></td>
+							<td><input type="number" id="addPrincipleAmtAdvance[${theCount.index}]" name="principleAmountforInterest" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="cal()"/></td>
+							<td><input type="number" id="addAdvanceCollection[${theCount.index}]" name="advancedCollection" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="cal()"/></td>
+       						<td><input type="number" id="repaymentToBankAdvance[${theCount.index}]" name="repaymentToBank" readonly="readonly"/></td>
+       						<td><input type="number" id="cumulativeCollection[${theCount.index}]" name="cumulativeCollection" readonly="readonly"/></td>
+       						</tr>
+       						
+						</c:forEach>
+						<tr>
+       							<th></th>
+								<th><input type="number" name="principleAmtTotal" id="principleAmtTotalAdvance" readonly="readonly"/></th>
+								<th><input type="number" name="advanceCollectionAmtTotal" id="advanceCollectionAmtTotal" readonly="readonly"/></th>
+								<th><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalAdvance" readonly="readonly"/></th>
+								<th><input type="number" name="CumulativeCollectionAmtTotal" id="CumulativeCollectionAmtTotal" readonly="readonly"/></th>
+							</tr>
+						</table>
 					</div>
 					<br><br>
-					<!-- Principle Amount Total<input type="number" name="principleAmtTotal" id="principleAmtTotalAdvance" /><br>
-					Repayment Amount Total<input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalAdvance" />
-					Advance Collection Amount Total<input type="number" name="advanceCollectionAmtTotal" id="advanceCollectionAmtTotal" />
-					Cumulative Collectionn Total<input type="number" name="CumulativeCollectionAmtTotal" id="CumulativeCollectionAmtTotal" /> -->
 					<button type="submit">Submit</button>
 				</form:form>
 			</div>
@@ -487,13 +503,12 @@ button:hover {
 								<th>Cutback To Amount</th>
 								<th>Cutback Ratio</th>
 							</tr>
-							<c:forEach var="tempCustomer" items="${cutbackDetails}">
+							<c:forEach var="tempCustomer" items="${cutbackDetails}" varStatus="theCount">
 								<tr>
-									<td><input type="number" name="cutbackFromAmount" value="${tempCustomer.cutbackFromAmount}"/></td>
-									<td><input type="number" name="cutbackToAmount" value="${tempCustomer.cutbackToAmount}"/></td>
-									<td><input type="number" name="cutbackRatio" value="${tempCustomer.cutbackRatio}"/></td>
+									<td><input type="number" name="cutbackFromAmount" id="addcutbackFromAmount[${theCount.index}]" value="${tempCustomer.cutbackFromAmount}"/></td>
+									<td><input type="number" name="cutbackToAmount" id="addcutbackToAmount[${theCount.index}]" value="${tempCustomer.cutbackToAmount}"/></td>
+									<td><input type="number" name="cutbackRatio" id="addcutbackRatio[${theCount.index}]" value="${tempCustomer.cutbackRatio}"/></td>
 									<td><input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" /></td>
-									
 								</tr>
 							</c:forEach>
 						</table>
@@ -503,7 +518,7 @@ button:hover {
 						<input type="number" name="collectionAmnt" value="${bankComparison.collectionAmnt}" />
 						<input type="text" name="interestType" value="Advance" hidden="true" />
 						
-						<table id="dataTableUpdateAdvance">
+						<table>
 							<tr>
 								<td><input type="number" name="customerId" hidden="true"
 									value="${bankInterestMasterDetails.customerId}" /></td>
@@ -511,25 +526,29 @@ button:hover {
 									value="${bankInterestMasterDetails.comparisonId}" /></td>
 							</tr>
 							<tr>
-								<td><input type="button" value="Add Advance Culculation"
-									onclick="updateRowAdvance('dataTableUpdateAdvance')" class="btn_medium" /></td>
-							</tr>
-							<tr>
+								<tr>
 								<th>Month Ending On</th>
 								<th>Principal Amount</th>
 								<th>Advance Collection</th>
+								<th>Repayment to bank</th>
 							</tr>
-							<c:forEach var="tempCustomer" items="${bankInterestMaster}">
+							</tr>
+							<c:forEach var="tempCustomer" items="${bankInterestMaster}" varStatus="theCount">
 								<tr>
 									<td><input type="date" name="monthEndingOn" value="${tempCustomer.monthEndingOn}"/></td>
-									<td><input type="number" name="principleAmountforInterest" value="${tempCustomer.principleAmountforInterest}"/></td>
-									<td><input type="number" name="advancedCollection" value="${tempCustomer.advancedCollection}"/>
-										<input type="number" name="repaymentToBank" hidden="true" value="0"/>
-									</td>
-									<td><input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" /></td>
-									
+									<td><input type="number" name="principleAmountforInterest"  id="addPrincipleAmtAdvance[${theCount.index}]" value="${tempCustomer.principleAmountforInterest}" oninput="cal()"/></td>
+									<td><input type="number" name="advancedCollection"  id="addAdvanceCollection[${theCount.index}]" value="${tempCustomer.advancedCollection}" oninput="cal()"/></td>
+									<td><input type="number" name="repaymentToBank" id="repaymentToBankAdvance[${theCount.index}]" value="${tempCustomer.repaymentToBank}" readonly="readonly"/></td>
+									<td><input type="number" name="cumulativeCollection" id="cumulativeCollection[${theCount.index}]"  value="${tempCustomer.cumulativeCollection}" readonly="readonly"/></td>
 								</tr>
 							</c:forEach>
+							<tr>
+       							<th></th>
+								<th><input type="number" name="principleAmtTotal" id="principleAmtTotalAdvance" readonly="readonly"/></th>
+								<th><input type="number" name="advanceCollectionAmtTotal" id="advanceCollectionAmtTotal" readonly="readonly"/></th>
+								<th><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalAdvance" readonly="readonly"/></th>
+								<th><input type="number" name="CumulativeCollectionAmtTotal" id="CumulativeCollectionAmtTotal" readonly="readonly"/></th>
+							</tr>
 						</table>
 					</div>
 					<button type="submit">Submit</button>
@@ -606,130 +625,6 @@ window.onclick = function(event) {
   }
 }
 
-	function addRowFixed(tableID) {
-		var tableHeaderRowCount = 0;
-		var table1 = document.getElementById(tableID);
-		var rowCount = table1.rows.length;
-		var x = document.getElementById(tableID).rows.length;
-		if(rowCount > 0){
-			for (var i = 0; i < rowCount ; i++) {
-		    	table1.deleteRow(tableHeaderRowCount);
-			} 
-		}
-		var interestPeriod = document.getElementById("interestPeriod").value;
-		
-		var table2 = document.getElementById(tableID);
-
-        var rowCount2 = table2.rows.length;
-        var row2 = table2.insertRow(rowCount2);
-        
-        var cell0 = row2.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +'<span style="font-weight: bold;">Month Ending On</span>';
-   
-        var cell1 = row2.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +'<span style="font-weight: bold;">Principal Amount</span>';
-        
-        var cell2 = row2.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +'<span style="font-weight: bold;">Repayment to bank</span>';
-        
-		for (let i = 0; i < interestPeriod; i++) {
-        var table = document.getElementById(tableID);
-
-        var rowCount = table.rows.length;
-        var row = table.insertRow(rowCount);
-
-        var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="date" name="monthEndingOn" required="required"/>';
-   
-        var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +'  <input type="number" id="addPrincipleAmt['+i+']" name="principleAmountforInterest" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="getInputValue();"/>';
-        
-        var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +'<input type="number" id="addRepaymentAmt['+i+']" name="repaymentToBank" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="getInputValue();"/> <input type="number" name="advancedCollection" hidden="true" value="0" />';
-        
-        
-		}
-		
-	}
-	
-	function addRowAdvance(tableID) {
-		
-		
-		var tableHeaderRowCount = 0;
-		var table1 = document.getElementById(tableID);
-		var rowCount = table1.rows.length;
-		var x = document.getElementById(tableID).rows.length;
-		if(rowCount > 0){
-			for (var i = 0; i < rowCount ; i++) {
-		    	table1.deleteRow(tableHeaderRowCount);
-			} 
-		}
-		var interestPeriodAdvance = document.getElementById("interestPeriodAdvance").value;
-	
-		
-		var table2 = document.getElementById(tableID);
-
-        var rowCount2 = table2.rows.length;
-        var row2 = table2.insertRow(rowCount2);
-        
-        var cell0 = row2.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +'<span style="font-weight: bold;">Month Ending On</span>';
-   
-        var cell1 = row2.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +'<span style="font-weight: bold;">Principal Amount</span>';
-        
-        var cell2 = row2.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +'<span style="font-weight: bold;">Advance Collection</span>';
-        
-        var cell3 = row2.insertCell(3);
-        cell3.innerHTML = cell3.innerHTML +'<span style="font-weight: bold;">Repayment to bank</span>';
-        
-		for (let i = 0; i < interestPeriodAdvance; i++) {
-        var table = document.getElementById(tableID);
-
-        var rowCount = table.rows.length;
-        var row = table.insertRow(rowCount);
-
-        var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="date"  id="monthEndingOnAdvance['+i+']" name="monthEndingOn" required="required"/>';
-   
-        var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +' <input type="number" id="addPrincipleAmtAdvance['+i+']" name="principleAmountforInterest" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="cal()"/>';
-        
-        var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +' <input type="number" id="addAdvanceCollection['+i+']" name="advancedCollection" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="cal()"/>';
-        
-        var cell3 = row.insertCell(3);
-        cell3.innerHTML = cell3.innerHTML +' <input type="number" id="repaymentToBankAdvance['+i+']" name="repaymentToBank" readonly="readonly"/>';
-        
-        var cell4 = row.insertCell(4);
-        cell4.innerHTML = cell4.innerHTML +' <input type="number" id="cumulativeCollection['+i+']" name="cumulativeCollection" readonly="readonly"/>';
-		}
-		
-		var table3 = document.getElementById(tableID);
-
-        var rowCount3 = table3.rows.length;
-        var row3 = table3.insertRow(rowCount3);
-        
-        var cell0 = row3.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +'';
-   
-        var cell1 = row3.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +'<input type="number" name="principleAmtTotal" id="principleAmtTotalAdvance" readonly="readonly"/>';
-        
-        var cell2 = row3.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +'<input type="number" name="advanceCollectionAmtTotal" id="advanceCollectionAmtTotal" readonly="readonly"/>';
-        
-        var cell3 = row3.insertCell(3);
-        cell3.innerHTML = cell3.innerHTML +'<input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalAdvance" readonly="readonly"/>';
-        
-        var cell4 = row3.insertCell(4);
-        cell4.innerHTML = cell4.innerHTML +'<input type="number" name="CumulativeCollectionAmtTotal" id="CumulativeCollectionAmtTotal" readonly="readonly"/>';
-        
-        
-       
-	}
-	
 	function addRowAdvanceCutback(tableID) {
 		var table1 = document.getElementById(tableID);
 		var rowCount = table1.rows.length;
@@ -753,65 +648,28 @@ window.onclick = function(event) {
 		}
 	}
 	
-	function addRowUpdateFixed(tableID) {
-
-        var table = document.getElementById(tableID);
-
-        var rowCount = table.rows.length;
-        var row = table.insertRow(rowCount);
-
-        var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="date" name="monthEndingOn" required="required"/>';
-   
-        var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +' <input type="number" name="principleAmountforInterest" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
-        
-        var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +' <input type="number" name="repaymentToBank" onfocus="focusData(this)" onblur="blurData(this)" value="0"/> <input type="number" name="advancedCollection" hidden="true" value="0"/>';
-        
-        var cell3 = row.insertCell(3);
-        cell3.innerHTML = cell3.innerHTML +'<input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" />';
-	}
-	
-	
-	function updateRowAdvance(tableID) {
-
-        var table = document.getElementById(tableID);
-
-        var rowCount = table.rows.length;
-        var row = table.insertRow(rowCount);
-
-        var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="date" name="monthEndingOn" required="required"/>';
-   
-        var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +' <input type="number" name="principleAmountforInterest" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
-        
-        var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +' <input type="number" name="advancedCollection" onfocus="focusData(this)" onblur="blurData(this)" value="0" /> <input type="number" name="repaymentToBank" hidden="true" value="0"/> ';
-        
-        var cell3 = row.insertCell(3);
-        cell3.innerHTML = cell3.innerHTML +'<input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" />';
-	}
 	
 	function updateRowAdvanceCutback(tableID) {
-
+		var table1 = document.getElementById(tableID);
+		var rowCount = table1.rows.length;
+		for (let i = rowCount ; i < rowCount+1 ; i++) {
         var table = document.getElementById(tableID);
 
         var rowCount = table.rows.length;
         var row = table.insertRow(rowCount);
 
         var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="number" name="cutbackFromAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell0.innerHTML = cell0.innerHTML +' <input type="number" id="addcutbackFromAmount['+i+']" name="cutbackFromAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
    
         var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +' <input type="number" name="cutbackToAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell1.innerHTML = cell1.innerHTML +' <input type="number" id="addcutbackToAmount['+i+']" name="cutbackToAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
         
         var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +' <input type="number" name="cutbackRatio" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell2.innerHTML = cell2.innerHTML +' <input type="number" id="addcutbackRatio['+i+']" name="cutbackRatio" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
         
         var cell3 = row.insertCell(3);
         cell3.innerHTML = cell3.innerHTML +'<input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" />';
+		}
 	}
 	
 	function focusData(el) {
@@ -845,8 +703,8 @@ window.onclick = function(event) {
         {
         	debugger;
         	$("input[name=advancedCollection]").each(function(index) {
-        		var interestPeriodAdvance = document.getElementById("interestPeriodAdvance").value;
-        		var compareinterest = Number(interestPeriodAdvance)-1;
+        		var loanTenure = document.getElementById("loanTenure").value;
+        		var compareinterest = Number(loanTenure)-1;
         		if(index == 0)
         		{
         			/* var table1 = document.getElementById('dataTableAdvanceCutback');
