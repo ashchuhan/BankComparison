@@ -361,7 +361,7 @@ button:hover {
 							<span>Processing Fees(Rs.in lakh)</span> 
 							<input type="number" id="prcsFees" name="processingFees" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Processing Fees (Rs.in lakh)" readonly="readonly" value="0">
 							
-							<span>Processing Fees With GST</span> 
+							<span>Processing Fees GST</span> 
 							<input type="number" id="processingFeesGst" name="processingFeesGst" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Processing Fees With GST" value="0" readonly="readonly">
 							
 							<span>Consultancy Fees(Rs.in lakh)</span> 

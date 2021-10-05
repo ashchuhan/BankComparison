@@ -207,7 +207,7 @@ button:hover {
 					<a href="${deleteLink}" class="delBtn" onclick="if (!(confirm('Are you sure you want to delete this interest calculation?'))) return false">Delete</a>	
 					<a href="${exportLink}" class="delBtn" >export excel</a>	
 					<c:if test="${interestType == 'Fixed'}">
-						<button class="button" data-modal="updateformfixed">update</button>
+						<button class="button1" data-modal="updateformfixed" >update</button>
 					</c:if>
 					<c:if test="${interestType == 'Advance'}">
 						<button class="button" data-modal="updateformadvance">update</button>
@@ -334,15 +334,15 @@ button:hover {
        						</tr>
        						
 						</c:forEach>
-						 
+						 <tr>
+								<td></td>
+								<td><input type="number" name="principleAmtTotal" id="principleAmtTotal" required="required" /></td>
+								<td><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotal" required="required"/></td>
+							</tr>
 						</table>
 						
 					<br><br>
-					Principle Amount Total<input type="number" name="principleAmtTotal" id="principleAmtTotal" required="required" /><br>
-					Repayment Amount Total<input type="number" name="repaymentAmtTotal" id="repaymentAmtTotal" required="required"/>
 					<button type="submit">Submit</button>
-				
-     
 				</form:form>
 			</div>
 		</div>
@@ -439,8 +439,9 @@ button:hover {
 					<h3 align="center">Interest Calculation Form</h3>
 						<input type="number" name="collectionAmnt" value="0" hidden="true" />
 						<input type="text" name="interestType" value="Fixed" hidden="true" />
+						
 					<div>
-						<table id="dataTableUpdateFixed">
+						<table>
 							<tr>
 								<td><input type="number" name="customerId" hidden="true"
 									value="${bankInterestMasterDetails.customerId}" /></td>
@@ -448,25 +449,25 @@ button:hover {
 									value="${bankInterestMasterDetails.comparisonId}" /></td>
 							</tr>
 							<tr>
-								<td><input type="button" value="AddMore"
-									onclick="addRowUpdateFixed('dataTableUpdateFixed')" class="btn_medium" /></td>
-							</tr>
-							<tr>
 								<th>Month Ending On</th>
 								<th>Principal Amount</th>
 								<th>Repayment to Bank</th>
 							</tr>
-							<c:forEach var="tempCustomer" items="${bankInterestMaster}">
+							<c:forEach var="tempCustomer" items="${bankInterestMaster}" varStatus="theCount">
 								<tr>
 									<td><input type="date" name="monthEndingOn" value="${tempCustomer.monthEndingOn}"/></td>
-									<td><input type="number" name="principleAmountforInterest" value="${tempCustomer.principleAmountforInterest}"/></td>
-									<td><input type="number" name="repaymentToBank" value="${tempCustomer.repaymentToBank}"/>
+									<td><input type="number" id="addPrincipleAmt[${theCount.index}]" class="principleAmountforInterest" name="principleAmountforInterest" value="${tempCustomer.principleAmountforInterest}" oninput="updateInputValue();"/></td>
+									<td><input type="number" id="addRepaymentAmt[${theCount.index}]" class="repaymentToBank" name="repaymentToBank" value="${tempCustomer.repaymentToBank}" oninput="updateInputValue();"/>
 										<input type="number" name="advancedCollection" hidden="true" value="0"/>
 									</td>
-									<td><input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" /></td>
 									
 								</tr>
 							</c:forEach>
+							<tr>
+								<td></td>
+								<td><input type="number" name="principleAmtTotal" id="principleAmtTotalupdate" required="required" /></td>
+								<td><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalupdate" required="required"/></td>
+							</tr>
 						</table>
 					</div>
 					<button type="submit">Submit</button>
@@ -483,6 +484,12 @@ button:hover {
 				<form:form action="/bankcomparisoninterest/bankInterest/updateAdvanceInterest"
 					cssClass="form-horizontal" method="post"> 
 					<h3 align="center">Advance Collection Form</h3>
+						<span>Collection amount till Date</span>
+						<input type="number" name="collectionAmnt" id="collectionAmntupdate" class="collectionAmnt" value="${bankComparison.collectionAmnt}" />
+						<input type="text" name="interestType" value="Advance" hidden="true" />
+						<label style="font-weight: bold;">Loan Amount</label> 
+						<input type="number" name="loanAmount" id="advanceLoanAmountUpdate"
+							value="${bankComparison.loanAmount}" readonly="readonly"> <br>
 					<div>
 						
 						<h3 align="center">Cutback</h3>
@@ -505,19 +512,16 @@ button:hover {
 							</tr>
 							<c:forEach var="tempCustomer" items="${cutbackDetails}" varStatus="theCount">
 								<tr>
-									<td><input type="number" name="cutbackFromAmount" id="addcutbackFromAmount[${theCount.index}]" value="${tempCustomer.cutbackFromAmount}"/></td>
-									<td><input type="number" name="cutbackToAmount" id="addcutbackToAmount[${theCount.index}]" value="${tempCustomer.cutbackToAmount}"/></td>
-									<td><input type="number" name="cutbackRatio" id="addcutbackRatio[${theCount.index}]" value="${tempCustomer.cutbackRatio}"/></td>
+									<td><input type="number" name="cutbackFromAmount" class="cutbackFromAmountUpdate" id="cutbackFromAmountUpdate[${theCount.index}]" value="${tempCustomer.cutbackFromAmount}"/></td>
+									<td><input type="number" name="cutbackToAmount" class="cutbackToAmountUpdate" id="cutbackToAmountUpdate[${theCount.index}]" value="${tempCustomer.cutbackToAmount}"/></td>
+									<td><input type="number" name="cutbackRatio" class="cutbackRatioUpdate" id="cutbackRatioUpdate[${theCount.index}]" value="${tempCustomer.cutbackRatio}"/></td>
 									<td><input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" /></td>
 								</tr>
 							</c:forEach>
 						</table>
 						</div>
 						
-						<span>Collection amount till Date</span>
-						<input type="number" name="collectionAmnt" value="${bankComparison.collectionAmnt}" />
-						<input type="text" name="interestType" value="Advance" hidden="true" />
-						
+					
 						<table>
 							<tr>
 								<td><input type="number" name="customerId" hidden="true"
@@ -536,18 +540,18 @@ button:hover {
 							<c:forEach var="tempCustomer" items="${bankInterestMaster}" varStatus="theCount">
 								<tr>
 									<td><input type="date" name="monthEndingOn" value="${tempCustomer.monthEndingOn}"/></td>
-									<td><input type="number" name="principleAmountforInterest"  id="addPrincipleAmtAdvance[${theCount.index}]" value="${tempCustomer.principleAmountforInterest}" oninput="cal()"/></td>
-									<td><input type="number" name="advancedCollection"  id="addAdvanceCollection[${theCount.index}]" value="${tempCustomer.advancedCollection}" oninput="cal()"/></td>
-									<td><input type="number" name="repaymentToBank" id="repaymentToBankAdvance[${theCount.index}]" value="${tempCustomer.repaymentToBank}" readonly="readonly"/></td>
-									<td><input type="number" name="cumulativeCollection" id="cumulativeCollection[${theCount.index}]"  value="${tempCustomer.cumulativeCollection}" readonly="readonly"/></td>
+									<td><input type="number" name="principleAmountforInterest" class="principleAmountforInterestUpdate" id="principleAmountforInterestUpdate[${theCount.index}]" value="${tempCustomer.principleAmountforInterest}" oninput="updateAdvanceCalculation()"/></td>
+									<td><input type="number" name="advancedCollection"  class="advancedCollectionUpdate" id="advancedCollectionUpdate[${theCount.index}]" value="${tempCustomer.advancedCollection}" oninput="updateAdvanceCalculation()"/></td>
+									<td><input type="number" name="repaymentToBank" class="repaymentToBankUpdate" id="repaymentToBankUpdate[${theCount.index}]" value="${tempCustomer.repaymentToBank}" readonly="readonly"/></td>
+									<td><input type="number" name="cumulativeCollection" class="cumulativeCollectionUpdate" id="cumulativeCollectionUpdate[${theCount.index}]"  value="${tempCustomer.cumulativeCollection}" readonly="readonly"/></td>
 								</tr>
 							</c:forEach>
 							<tr>
        							<th></th>
-								<th><input type="number" name="principleAmtTotal" id="principleAmtTotalAdvance" readonly="readonly"/></th>
-								<th><input type="number" name="advanceCollectionAmtTotal" id="advanceCollectionAmtTotal" readonly="readonly"/></th>
-								<th><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalAdvance" readonly="readonly"/></th>
-								<th><input type="number" name="CumulativeCollectionAmtTotal" id="CumulativeCollectionAmtTotal" readonly="readonly"/></th>
+								<th><input type="number" name="principleAmtTotal" id="principleAmtTotalAdvanceUpdate" readonly="readonly"/></th>
+								<th><input type="number" name="advanceCollectionAmtTotal" id="advanceCollectionAmtTotalUpdate" readonly="readonly"/></th>
+								<th><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotalAdvanceUpdate" readonly="readonly"/></th>
+								<th><input type="number" name="CumulativeCollectionAmtTotal" id="CumulativeCollectionAmtTotalUpdate" readonly="readonly"/></th>
 							</tr>
 						</table>
 					</div>
@@ -603,6 +607,25 @@ modalBtns.forEach(function(btn) {
       .style.display = "block";
   }
 });
+  let modalBtns1 = [...document.querySelectorAll(".button1")];
+  modalBtns1.forEach(function(btn) {
+    btn.onclick = function() {
+      let modal = btn.getAttribute('data-modal');
+      document.getElementById(modal)
+        .style.display = "block";
+      updateInputValue();
+    }
+  });   
+    let modalBtns2 = [...document.querySelectorAll(".button2")];
+    modalBtns2.forEach(function(btn) {
+      btn.onclick = function() {
+        let modal = btn.getAttribute('data-modal');
+        document.getElementById(modal)
+          .style.display = "block";
+        updateInputValue();
+      }
+    });  
+
 let closeBtns = [...document.querySelectorAll(".close")];
 closeBtns.forEach(function(btn) {
   btn.onclick = function() {
@@ -680,11 +703,8 @@ window.onclick = function(event) {
        
 		if(el.value=='')el.value="0";
     }
-</script>
-<script>
+
         function getInputValue(){
-			
-			debugger;
 			var loanTenure =document.getElementById("loanTenure").value;
 			var addPrincipleAmt = 0;
 			var addRepaymentAmt = 0;
@@ -692,13 +712,95 @@ window.onclick = function(event) {
 				addPrincipleAmt = Number(document.getElementById("addPrincipleAmt["+i+"]").value) + Number(addPrincipleAmt);
 				addRepaymentAmt = Number(document.getElementById("addRepaymentAmt["+i+"]").value) + Number(addRepaymentAmt);
 			}
-			
 			document.getElementById("principleAmtTotal").value = addPrincipleAmt.toFixed(2);
 			document.getElementById("repaymentAmtTotal").value = addRepaymentAmt.toFixed(2);
-			
         }
         
+        function updateInputValue(){
+       		debugger;
+			var elements = document.querySelectorAll('.principleAmountforInterest');
+			var principleAmount = document.querySelectorAll('.principleAmountforInterest');
+			var repaymentToBank = document.querySelectorAll('.repaymentToBank');
+			var addPrincipleAmt = 0;
+			var addRepaymentAmt = 0;
+			Array.prototype.slice.call(principleAmount).forEach(function(principleAmount) {
+				addPrincipleAmt = Number(principleAmount.value) + Number(addPrincipleAmt);
+			});
+			Array.prototype.slice.call(repaymentToBank).forEach(function(repaymentToBank) {
+				addRepaymentAmt = Number(repaymentToBank.value) + Number(addRepaymentAmt);
+			});
+			document.getElementById("principleAmtTotalupdate").value = addPrincipleAmt.toFixed(2);
+			document.getElementById("repaymentAmtTotalupdate").value = addRepaymentAmt.toFixed(2);
+        }
         
+        function updateAdvanceCalculation(){
+        	debugger;
+        	var loanTenure = document.getElementById("loanTenure").value;
+        	var collectionAmnt = document.getElementById("collectionAmntupdate").value;
+        	var compareinterest = Number(loanTenure)-1;
+			var advancedCollection = document.getElementsByClassName('advancedCollectionUpdate');
+			var principleAmount = document.getElementsByClassName('principleAmountforInterestUpdate');
+			var repaymentToBank = document.getElementsByClassName('repaymentToBankUpdate');
+			var cumulativeCollection = document.getElementsByClassName('cumulativeCollectionUpdate');
+			var cutbackFromAmountUpdate = document.getElementsByClassName('cutbackFromAmountUpdate');
+			var cutbackToAmountUpdate = document.getElementsByClassName('cutbackToAmountUpdate');
+			var cutbackRatioUpdate = document.getElementsByClassName('cutbackRatioUpdate');
+			for (var i = 0; i < advancedCollection.length; i++) {
+		    	if(advancedCollection[i] == advancedCollection[0]){
+	        		var addAdvanceCollection = advancedCollection[0].value;
+	        		var addPrincipleAmount= principleAmount[0].value;
+	        		var addcumulativeCollection= Number(collectionAmnt) + Number(addAdvanceCollection);
+	        		document.getElementById("cumulativeCollectionUpdate[0]").value = addcumulativeCollection;
+	        		document.getElementById("CumulativeCollectionAmtTotalUpdate").value = addcumulativeCollection;
+	        		var x = document.getElementById('dataTableAdvanceCutback').rows.length;
+	        		var repayment = 0;
+	        		if(x > 1){
+	        			for (var j = 0; j < x-1 ; j++) {
+	        				if(Number(cutbackFromAmountUpdate[j].value) <= addcumulativeCollection
+	        							&& Number(cutbackToAmountUpdate[j].value) > addcumulativeCollection)
+	        				{
+	        					repayment= Number(addAdvanceCollection)*(Number(cutbackRatioUpdate[j].value)/100);
+	        				}
+	        			}
+	        			document.getElementById("repaymentToBankUpdate[0]").value = repayment;
+	        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = repayment;
+	        		}
+	        		document.getElementById("principleAmtTotalAdvanceUpdate").value = addPrincipleAmount;
+	        		document.getElementById("advanceCollectionAmtTotalUpdate").value = addAdvanceCollection;
+				 }
+		    	else if(advancedCollection[i] >= advancedCollection[1]){
+		    		var addAdvanceCollectionindex1 = advancedCollection[i].value;
+		    		
+		    		if(advancedCollection[i] <= advancedCollection[1])
+		    		{
+		    		var addAdvanceCollectionindex = advancedCollection[i].value;
+		    		var d = Number(document.getElementById("CumulativeCollectionAmtTotalUpdate").value);
+        			var totalCumalativeCollection = Number(document.getElementById("CumulativeCollectionAmtTotalUpdate").value) + Number(addAdvanceCollectionindex);
+        			document.getElementById("cumulativeCollectionUpdate["+i+"]").value = totalCumalativeCollection
+        			document.getElementById("CumulativeCollectionAmtTotalUpdate").value = totalCumalativeCollection
+        			var x = document.getElementById('dataTableAdvanceCutback').rows.length;
+        			var totalrepayment= document.getElementById("repaymentAmtTotalAdvanceUpdate").value;
+        			var totalprincipleamount = document.getElementById("principleAmtTotalAdvanceUpdate").value;
+        			var totaladvancecollection = document.getElementById("advanceCollectionAmtTotalUpdate").value;
+        			var repayment1 = 0;
+        			if(x > 1){
+        				for (var j = 0; j < x-1 ; j++) {
+        					if(Number(cutbackFromAmountUpdate[j].value) <= totalCumalativeCollection
+        							&& Number(cutbackToAmountUpdate[j].value) > totalCumalativeCollection)
+        					{
+        						repayment1= Number(addAdvanceCollectionindex)*(Number(cutbackRatioUpdate[j].value)/100);
+        					}
+        				document.getElementById("repaymentToBankUpdate["+i+"]").value = repayment1;
+        				}
+        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = Number(totalrepayment)+Number(repayment1);
+        			document.getElementById("principleAmtTotalAdvanceUpdate").value = Number(totalprincipleamount)+ Number(principleAmount[i].value);
+        			document.getElementById("advanceCollectionAmtTotalUpdate").value = Number(totaladvancecollection)+ Number(advancedCollection[i].value);
+		    		}
+        			
+		    	}
+				}	
+       	 	}
+        }
         function cal()
         {
         	debugger;
