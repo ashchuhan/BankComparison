@@ -494,17 +494,13 @@ button:hover {
 						
 						<h3 align="center">Cutback</h3>
 						<div>
+						<input type="number" name="customerId" hidden="true"
+									value="${bankInterestMasterDetails.customerId}" />
+						<input type="number" name="comparisonId" hidden="true"
+									value="${bankInterestMasterDetails.comparisonId}" />
+						<input type="button" value="Add Cutback"
+									onclick="updateRowAdvanceCutback('dataTableUpdateAdvanceCutback')" class="btn_medium" />
 						<table id="dataTableUpdateAdvanceCutback">
-							<tr>
-								<td><input type="number" name="customerId" hidden="true"
-									value="${bankInterestMasterDetails.customerId}" /></td>
-								<td><input type="number" name="comparisonId" hidden="true"
-									value="${bankInterestMasterDetails.comparisonId}" /></td>
-							</tr>
-							<tr>
-								<td><input type="button" value="Add Cutback"
-									onclick="updateRowAdvanceCutback('dataTableUpdateAdvanceCutback')" class="btn_medium" /></td>
-							</tr>
 							<tr>
 								<th>Cutback From Amount</th>
 								<th>Cutback To Amount</th>
@@ -512,9 +508,9 @@ button:hover {
 							</tr>
 							<c:forEach var="tempCustomer" items="${cutbackDetails}" varStatus="theCount">
 								<tr>
-									<td><input type="number" name="cutbackFromAmount" class="cutbackFromAmountUpdate" id="cutbackFromAmountUpdate[${theCount.index}]" value="${tempCustomer.cutbackFromAmount}"/></td>
-									<td><input type="number" name="cutbackToAmount" class="cutbackToAmountUpdate" id="cutbackToAmountUpdate[${theCount.index}]" value="${tempCustomer.cutbackToAmount}"/></td>
-									<td><input type="number" name="cutbackRatio" class="cutbackRatioUpdate" id="cutbackRatioUpdate[${theCount.index}]" value="${tempCustomer.cutbackRatio}"/></td>
+									<td><input type="number" name="cutbackFromAmount" class="cutbackFromAmountUpdate" id="cutbackFromAmountUpdate[${theCount.index}]" value="${tempCustomer.cutbackFromAmount}" oninput="updateAdvanceCalculation()"/></td>
+									<td><input type="number" name="cutbackToAmount" class="cutbackToAmountUpdate" id="cutbackToAmountUpdate[${theCount.index}]" value="${tempCustomer.cutbackToAmount}" oninput="updateAdvanceCalculation()"/></td>
+									<td><input type="number" name="cutbackRatio" class="cutbackRatioUpdate" id="cutbackRatioUpdate[${theCount.index}]" value="${tempCustomer.cutbackRatio}" oninput="updateAdvanceCalculation()"/></td>
 									<td><input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" /></td>
 								</tr>
 							</c:forEach>
@@ -746,13 +742,13 @@ window.onclick = function(event) {
 			var cutbackToAmountUpdate = document.getElementsByClassName('cutbackToAmountUpdate');
 			var cutbackRatioUpdate = document.getElementsByClassName('cutbackRatioUpdate');
 			for (var i = 0; i < advancedCollection.length; i++) {
-		    	if(advancedCollection[i] == advancedCollection[0]){
+		    	if(i == 0){
 	        		var addAdvanceCollection = advancedCollection[0].value;
 	        		var addPrincipleAmount= principleAmount[0].value;
 	        		var addcumulativeCollection= Number(collectionAmnt) + Number(addAdvanceCollection);
 	        		document.getElementById("cumulativeCollectionUpdate[0]").value = addcumulativeCollection;
 	        		document.getElementById("CumulativeCollectionAmtTotalUpdate").value = addcumulativeCollection;
-	        		var x = document.getElementById('dataTableAdvanceCutback').rows.length;
+	        		var x = document.getElementById('dataTableUpdateAdvanceCutback').rows.length;
 	        		var repayment = 0;
 	        		if(x > 1){
 	        			for (var j = 0; j < x-1 ; j++) {
@@ -762,23 +758,18 @@ window.onclick = function(event) {
 	        					repayment= Number(addAdvanceCollection)*(Number(cutbackRatioUpdate[j].value)/100);
 	        				}
 	        			}
-	        			document.getElementById("repaymentToBankUpdate[0]").value = repayment;
-	        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = repayment;
+	        			document.getElementById("repaymentToBankUpdate[0]").value = parseFloat(repayment).toFixed(2);
+	        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = parseFloat(repayment).toFixed(2);
 	        		}
 	        		document.getElementById("principleAmtTotalAdvanceUpdate").value = addPrincipleAmount;
 	        		document.getElementById("advanceCollectionAmtTotalUpdate").value = addAdvanceCollection;
 				 }
-		    	else if(advancedCollection[i] >= advancedCollection[1]){
-		    		var addAdvanceCollectionindex1 = advancedCollection[i].value;
-		    		
-		    		if(advancedCollection[i] <= advancedCollection[1])
-		    		{
+		    	else if(i > 0 && i < compareinterest){
 		    		var addAdvanceCollectionindex = advancedCollection[i].value;
-		    		var d = Number(document.getElementById("CumulativeCollectionAmtTotalUpdate").value);
         			var totalCumalativeCollection = Number(document.getElementById("CumulativeCollectionAmtTotalUpdate").value) + Number(addAdvanceCollectionindex);
         			document.getElementById("cumulativeCollectionUpdate["+i+"]").value = totalCumalativeCollection
         			document.getElementById("CumulativeCollectionAmtTotalUpdate").value = totalCumalativeCollection
-        			var x = document.getElementById('dataTableAdvanceCutback').rows.length;
+        			var x = document.getElementById('dataTableUpdateAdvanceCutback').rows.length;
         			var totalrepayment= document.getElementById("repaymentAmtTotalAdvanceUpdate").value;
         			var totalprincipleamount = document.getElementById("principleAmtTotalAdvanceUpdate").value;
         			var totaladvancecollection = document.getElementById("advanceCollectionAmtTotalUpdate").value;
@@ -788,16 +779,56 @@ window.onclick = function(event) {
         					if(Number(cutbackFromAmountUpdate[j].value) <= totalCumalativeCollection
         							&& Number(cutbackToAmountUpdate[j].value) > totalCumalativeCollection)
         					{
-        						repayment1= Number(addAdvanceCollectionindex)*(Number(cutbackRatioUpdate[j].value)/100);
+        						repayment1= (Number(addAdvanceCollectionindex)*(Number(cutbackRatioUpdate[j].value)/100).toFixed(2));
         					}
-        				document.getElementById("repaymentToBankUpdate["+i+"]").value = repayment1;
+        				document.getElementById("repaymentToBankUpdate["+i+"]").value = parseFloat(repayment1).toFixed(2);
         				}
-        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = Number(totalrepayment)+Number(repayment1);
+        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = Number(totalrepayment)+Number(parseFloat(repayment1).toFixed(2));
         			document.getElementById("principleAmtTotalAdvanceUpdate").value = Number(totalprincipleamount)+ Number(principleAmount[i].value);
         			document.getElementById("advanceCollectionAmtTotalUpdate").value = Number(totaladvancecollection)+ Number(advancedCollection[i].value);
 		    		}
-        			
 		    	}
+		    	else if(i > 0 && i == compareinterest){
+		    		var addAdvanceCollectionindex = advancedCollection[i].value;
+        			var totalCumalativeCollection = Number(document.getElementById("CumulativeCollectionAmtTotalUpdate").value) + Number(addAdvanceCollectionindex);
+        			document.getElementById("cumulativeCollectionUpdate["+i+"]").value = totalCumalativeCollection
+        			document.getElementById("CumulativeCollectionAmtTotalUpdate").value = totalCumalativeCollection
+        			var x = document.getElementById('dataTableUpdateAdvanceCutback').rows.length;
+        			var totalrepayment= document.getElementById("repaymentAmtTotalAdvanceUpdate").value;
+        			var totalprincipleamount = document.getElementById("principleAmtTotalAdvanceUpdate").value;
+        			var totaladvancecollection = document.getElementById("advanceCollectionAmtTotalUpdate").value;
+					var repayment1 = 0;
+        			if(x > 1){
+					for (var j = 0; j < x-1 ; j++) {
+        					if(Number(cutbackFromAmountUpdate[j].value) <= totalCumalativeCollection
+        							&& Number(cutbackToAmountUpdate[j].value) > totalCumalativeCollection)
+        					{
+        						repayment1= (Number(addAdvanceCollectionindex)*(Number(cutbackRatioUpdate[j].value)/100).toFixed(2));
+        					}
+        				}
+        			}
+        			var repaymentTotalLastRow = Number(totalrepayment)+Number(parseFloat(repayment1).toFixed(2));
+        			var loanamount =document.getElementById("advanceLoanAmount").value;
+        			var difference = 0;
+        			var repaymentForDifference = 0; 
+        			if(loanamount == repaymentTotalLastRow)
+        			{
+        				document.getElementById("repaymentToBankUpdate["+i+"]").value = parseFloat(repayment1).toFixed(2);
+        			}
+        			else if(loanamount < repaymentTotalLastRow)
+        			{
+        				difference = Number(repaymentTotalLastRow) - Number(loanamount);
+        				repayment1 = Number(repayment1) -  Number(difference);
+        				document.getElementById("repaymentToBankUpdate["+i+"]").value = parseFloat(repayment1).toFixed(2);
+        			}
+        			else
+        			{
+        				document.getElementById("repaymentToBankUpdate["+i+"]").value = parseFloat(repayment1).toFixed(2);
+        			}
+        			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = Number(totalrepayment)+Number(parseFloat(repayment1).toFixed(2));
+        			document.getElementById("principleAmtTotalAdvanceUpdate").value = Number(totalprincipleamount)+ Number(principleAmount[i].value);
+        			document.getElementById("advanceCollectionAmtTotalUpdate").value = Number(totaladvancecollection)+ Number(advancedCollection[i].value);
+			
 				}	
        	 	}
         }

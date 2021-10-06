@@ -453,7 +453,9 @@ button:hover {
     </script>
 	<script>
         function getInputValue(){
+        	debugger;
 			var loanAmntVal = document.getElementById("loanAmnt").value;
+			var lakh = Math.floor(Number(loanAmntVal) * 100000);
 			var prcsFessPerVal = document.getElementById("prcsFeesPer").value;
 			var hypothection = document.getElementById("hypothction").value;
 			var mortgageAmnt = document.getElementById("mortgageAmnt").value;

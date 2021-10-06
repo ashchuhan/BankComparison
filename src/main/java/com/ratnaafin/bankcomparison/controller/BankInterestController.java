@@ -261,6 +261,7 @@ public class BankInterestController {
 		double total = totalExpense + totalInterest;
 		total = Double.parseDouble(new DecimalFormat("##.##").format(total));
 		totalExpense = Double.parseDouble(new DecimalFormat("##.##").format(totalExpense));
+		totalInterest = Double.parseDouble(new DecimalFormat("##.##").format(totalInterest));
 		bankinterestservice.updateTotalInterest(totalInterest, comparisonId, total, collectionAmnt);
 	}
 	
