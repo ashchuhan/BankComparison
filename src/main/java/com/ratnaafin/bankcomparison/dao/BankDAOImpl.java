@@ -17,6 +17,7 @@ public class BankDAOImpl implements BankDAO{
 	
 	@Autowired
     private SessionFactory sessionFactory;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<BankMaster> getBankList() {
@@ -30,6 +31,12 @@ public class BankDAOImpl implements BankDAO{
 		Query query = currentSession.createQuery("select o from BankMaster o where o.bankId = :bankID", BankMaster.class);
 		query.setParameter("bankID", bankId);
 		return (BankMaster) query.getResultList().get(0);	
+	}
+	@Override
+	public void saveBank(BankMaster bank) {
+		Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.saveOrUpdate(bank);
+		
 	}
 
 }

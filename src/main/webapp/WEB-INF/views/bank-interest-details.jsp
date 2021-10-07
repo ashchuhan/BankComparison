@@ -347,8 +347,6 @@ button:hover {
 			</div>
 		</div>
 	</div>
-	
-	
 		<div id="fieldformadvance" class="modal">
 		<div class="modal-content">
 			<div class="contact-form">
@@ -375,7 +373,7 @@ button:hover {
 								<th>Cutback Ratio</th>
 							</tr>
 							<tr>
-								<th><input type="number" id="addcutbackFromAmount[1]" name="cutbackFromAmount" required="required"/></th>
+								<th><input type="number" id="addcutbackFromAmount[1]" name="cutbackFromAmount" readonly="readonly" value="0"/></th>
 								<th><input type="number" id="addcutbackToAmount[1]" name="cutbackToAmount" required="required"/></th>
 								<th><input type="number" id="addcutbackRatio[1]" name="cutbackRatio" required="required"/></th>
 							</tr>
@@ -654,13 +652,13 @@ window.onclick = function(event) {
         var row = table.insertRow(rowCount);
 
         var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="number" id="addcutbackFromAmount['+i+']" name="cutbackFromAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell0.innerHTML = cell0.innerHTML +' <input type="number" id="addcutbackFromAmount['+i+']" name="cutbackFromAmount" onfocus="focusData(this)" required="required"/>';
    
         var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +' <input type="number" id="addcutbackToAmount['+i+']" name="cutbackToAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell1.innerHTML = cell1.innerHTML +' <input type="number" id="addcutbackToAmount['+i+']" name="cutbackToAmount" onfocus="focusData(this)" required="required"/>';
         
         var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +' <input type="number" id="addcutbackRatio['+i+']" name="cutbackRatio" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell2.innerHTML = cell2.innerHTML +' <input type="number" id="addcutbackRatio['+i+']" name="cutbackRatio" onfocus="focusData(this)" required="required"/>';
         
         var cell3 = row.insertCell(3);
         cell3.innerHTML = cell3.innerHTML +'<input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" />';
@@ -678,13 +676,13 @@ window.onclick = function(event) {
         var row = table.insertRow(rowCount);
 
         var cell0 = row.insertCell(0);
-        cell0.innerHTML = cell0.innerHTML +' <input type="number" id="addcutbackFromAmount['+i+']" name="cutbackFromAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell0.innerHTML = cell0.innerHTML +' <input type="number" id="addcutbackFromAmount['+i+']" name="cutbackFromAmount" onfocus="focusData(this)" required="required"/>';
    
         var cell1 = row.insertCell(1);
-        cell1.innerHTML = cell1.innerHTML +' <input type="number" id="addcutbackToAmount['+i+']" name="cutbackToAmount" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell1.innerHTML = cell1.innerHTML +' <input type="number" id="addcutbackToAmount['+i+']" name="cutbackToAmount" onfocus="focusData(this)" required="required"/>';
         
         var cell2 = row.insertCell(2);
-        cell2.innerHTML = cell2.innerHTML +' <input type="number" id="addcutbackRatio['+i+']" name="cutbackRatio" onfocus="focusData(this)" onblur="blurData(this)" value="0"/>';
+        cell2.innerHTML = cell2.innerHTML +' <input type="number" id="addcutbackRatio['+i+']" name="cutbackRatio" onfocus="focusData(this)" required="required"/>';
         
         var cell3 = row.insertCell(3);
         cell3.innerHTML = cell3.innerHTML +'<input type="button" class="btn_medium" value="Remove" onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);" />';
@@ -692,7 +690,10 @@ window.onclick = function(event) {
 	}
 	
 	function focusData(el) {
-        el.value = '';
+		if(el.value == 0)
+		{
+        	el.value = '';
+		}
     }
 	
 	function blurData(el) {
@@ -828,7 +829,6 @@ window.onclick = function(event) {
         			document.getElementById("repaymentAmtTotalAdvanceUpdate").value = Number(totalrepayment)+Number(parseFloat(repayment1).toFixed(2));
         			document.getElementById("principleAmtTotalAdvanceUpdate").value = Number(totalprincipleamount)+ Number(principleAmount[i].value);
         			document.getElementById("advanceCollectionAmtTotalUpdate").value = Number(totaladvancecollection)+ Number(advancedCollection[i].value);
-			
 				}	
        	 	}
         }
@@ -890,7 +890,6 @@ window.onclick = function(event) {
         			document.getElementById("principleAmtTotalAdvance").value = Number(totalprincipleamount)+ Number(document.getElementById("addPrincipleAmtAdvance["+index+"]").value);
         			document.getElementById("advanceCollectionAmtTotal").value = Number(totaladvancecollection)+ Number(document.getElementById("addAdvanceCollection["+index+"]").value);
         		}
-        		
         		else if(index > 0 && index == compareinterest){
         			var addAdvanceCollectionindex = document.getElementById("addAdvanceCollection["+index+"]").value;
         			var totalCumalativeCollection = Number(document.getElementById("CumulativeCollectionAmtTotal").value) + Number(document.getElementById("addAdvanceCollection["+index+"]").value);
@@ -934,7 +933,6 @@ window.onclick = function(event) {
         			document.getElementById("advanceCollectionAmtTotal").value = Number(totaladvancecollection)+ Number(document.getElementById("addAdvanceCollection["+index+"]").value);
         		}
         		
-        	
         	 });
         	
        		}

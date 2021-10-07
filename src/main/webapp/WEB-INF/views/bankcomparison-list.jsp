@@ -1,3 +1,5 @@
+
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -342,9 +344,9 @@ button:hover {
 						<input type="number" name="customerId" hidden="true" value="${custId}"> 
 						<input type="number" name="collectionAmnt" hidden="true" value="0"> 
 							<span>Bank Name</span> 
-							<select name="bankId">
+							<select name="bankId" onchange="bankdetails();">
 							<c:forEach var="tempCustomer1" items="${bankList}">
-								<option value="${tempCustomer1.bankId}">${tempCustomer1.bankName}</option>
+								<option value="${tempCustomer1.bankId}" >${tempCustomer1.bankName}</option>
 							</c:forEach>
 							</select> 
 							<span>Loan amount upto (Rs. in lakh)</span>
@@ -526,6 +528,11 @@ button:hover {
         	var sum = Number(prcsFees) + Number(intrExpnse) + Number(renewExpnse) + Number(hypothection) + Number(mortgageAmnt) + Number(prgsRptVal) + Number(valRptVal) + Number(processingFeesGst) + Number(consultancyFees) + Number(consultancyFeesGst);
         	
 			document.getElementById("totalAmnt").value = sum.toFixed(2);
+        }
+        
+        function bankdetails(){
+        	debugger;
+        	var data ="${bankList}";
         }
     </script>
 </body>

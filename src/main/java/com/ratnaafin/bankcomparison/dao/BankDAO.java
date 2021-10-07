@@ -10,4 +10,6 @@ public interface BankDAO {
 
 	public BankMaster getBankByID(Long bankId);
 
+	public void saveBank(BankMaster bank);
+
 }
