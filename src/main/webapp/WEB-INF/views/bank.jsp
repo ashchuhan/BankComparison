@@ -124,7 +124,7 @@ button:hover {
 
 .backBtn {
 	align-self: flex-end;
-	float: left;
+	float: right;
 }
 
 .button {
@@ -142,39 +142,34 @@ button:hover {
 
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-12 wow fadeInUp" data-wow-duration="0.5s"
-				data-wow-delay="0.25s">
-				<form:form action="/bankcomparisoninterest/customer/saveCustomer"
-					cssClass="form-horizontal" method="post" id="customer"> 
-					<div class="row">
-						<div class="col-lg-6 offset-lg-3">
-							<div class="section-heading">
-								<h2>Create New/Search Customer</h2>
-							</div>
-						</div>
-						<div class="col-lg-12 ">
-							
-								<div class="section-heading">
-									<label for="customerName"><h6>Customer Name</h6></label><br>
-									<input type="text" id="customerName" name="customerName"  placeholder="Name" required="required" > 
-								</div>
-							
-						</div>
-						<div class="col-lg-6 offset-lg-3">
-								<button type="submit" class="main-blue-button scroll-to-section">Submit</button>
-						</div>
-					</div>
-					
-				</form:form>
-				<div class="col-lg-12 main-blue-button scroll-to-section">
-					<a href="/bankcomparisoninterest/bank/" class="backBtn">Add Bank</a>
-					</div>
-			</div>
-			
+		<div class="main-blue-button scroll-to-section">
+			<a href="/bankcomparisoninterest/" class="backBtn">Back To Create/Search Customer</a>
 		</div>
-	</div>
-	
+				<form:form action="/bankcomparisoninterest/bank/save"
+					cssClass="form-horizontal" method="post"> 
+					<h3>Add New Bank</h3>
+					<input type="radio" id="nationalized" name="bankType" value="Nationalized" required="required"/> Nationalized<br>
+					<input type="radio" id="private" name="bankType" value="Private"/> Private<br>
+					<input type="radio" id="nbfc" name="bankType" value="NBFC"/> NBFC<br><br>
+					
+						<!-- <input type="number" name="bankId" hidden="true">  -->
+						<span>Bank Name</span> 
+						<input type="text" id="bankName" name="bankName" required="required" class="inputclass"/>
+					<br><br>
+					<span>Minimum Capital Clause</span>
+					<div>
+						<textarea rows="4" name="minimumCapitalClause" required="required"></textarea>
+					</div>
+					<span>Further Disbursement</span>
+					<div>
+						<textarea rows="4" name="furtherDisbursement" required="required"></textarea>
+					</div>
+					<span>Possibilities of Disbursement Amount</span>
+					<div>
+						<textarea rows="4" name="possibilitiesofDisbursementAmount" required="required"></textarea>
+					</div>
+					<button type="submit">Submit</button>
+				</form:form>
+
 </body>
 </html>

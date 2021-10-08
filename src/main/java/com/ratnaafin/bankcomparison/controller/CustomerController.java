@@ -17,12 +17,6 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
     
-    @GetMapping("/addCustomer")
-    public String addCustomer(Model model) {
-    	model.addAttribute("customer", new Customer());
-        return "customer";
-    }
-
     @PostMapping("/saveCustomer")
     public String saveCustomer(@ModelAttribute("customer") Customer customer) {
     	String custName= customer.getCustomerName().toLowerCase();

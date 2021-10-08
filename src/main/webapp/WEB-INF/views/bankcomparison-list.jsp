@@ -344,7 +344,8 @@ button:hover {
 						<input type="number" name="customerId" hidden="true" value="${custId}"> 
 						<input type="number" name="collectionAmnt" hidden="true" value="0"> 
 							<span>Bank Name</span> 
-							<select name="bankId" onchange="bankdetails();">
+							<select name="bankId" id="bankId" onchange="bankdetails()" required="required">
+							<option value="">Select Bank</option>
 							<c:forEach var="tempCustomer1" items="${bankList}">
 								<option value="${tempCustomer1.bankId}" >${tempCustomer1.bankName}</option>
 							</c:forEach>
@@ -376,7 +377,7 @@ button:hover {
 							<input type="number" name="interestRate"  step="0.01" onKeyPress="if(this.value.length==5) return false;" placeholder="Interest Rate (ROI)" required="required"> 
 							<input type="number" id="intrstExpns" onfocus="value=''" onblur="if(this.value=='')this.value='0'"  value="0" hidden="true" name="interestExpense" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Interest Expense (Rs. in lakh)" oninput="getInputValue();"> 
 							<span>Renewal Fees(%)</span> 
-							<input type="number" name="renewalFees" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Fees" required="required">
+							<input type="number" id="renewFees" name="renewalFees" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Fees" required="required" oninput="getInputValue();">
 							<span>Renewal Expenses</span> 
 							<input type="number" id="renewExpns" name="renewalExpenses" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Expenses" oninput="getInputValue();" onfocus="value=''" onblur="if(this.value=='')this.value='0'"  value="0"> 
 							<span>Hypothecation (Rs. in lakh)</span> 
@@ -398,15 +399,15 @@ button:hover {
 					</div>
 					<span>Minimum Capital Clause</span>
 					<div>
-						<textarea rows="4" name="minimumCapitalClause"></textarea>
+						<textarea rows="4" name="minimumCapitalClause" id="minimumCapitalClause"></textarea>
 					</div>
 					<span>Further Disbursement</span>
 					<div>
-						<textarea rows="4" name="furtherDisbursement"></textarea>
+						<textarea rows="4" name="furtherDisbursement" id="furtherDisbursement"></textarea>
 					</div>
 					<span>Possibilities of Disbursement Amount</span>
 					<div>
-						<textarea rows="4" name="possibilitiesofDisbursementAmount"></textarea>
+						<textarea rows="4" name="possibilitiesofDisbursementAmount" id="possibilitiesofDisbursementAmount"></textarea>
 					</div>
 					<button type="submit">Submit</button>
 				</form:form>
@@ -462,15 +463,18 @@ button:hover {
 			var hypothection = document.getElementById("hypothction").value;
 			var mortgageAmnt = document.getElementById("mortgageAmnt").value;
 			var consultancyFees = document.getElementById("consultancyFees").value;
+			var renewalFees = document.getElementById("renewFees").value;
 			var consultancyFeesGst = 0;
 			var processingFeesGst = 0;
 			var prcsFees = 0;
 			var hypothectionPer = 0;
 			var mortgagePer = 0;
+			var renewExpnse = 0;
 			if(isNaN(loanAmntVal) || isNaN(prcsFessPerVal)){
 				prcsFees = 0;
 	        } else {
 	        	prcsFees = ((loanAmntVal*prcsFessPerVal) / 100).toFixed(2);
+	        	renewExpnse = ((loanAmntVal*renewalFees) / 100).toFixed(2);
 	        	processingFeesGst = ((Number(prcsFees)*18) / 100).toFixed(2);
 	        	consultancyFeesGst = ((Number(consultancyFees)*18) / 100).toFixed(2)
 	        	if(Number(loanAmntVal) <= 100000000){
@@ -517,22 +521,37 @@ button:hover {
 	        		}
 	        	}
 	        }
+			document.getElementById("renewExpns").value = renewExpnse;
 			document.getElementById("prcsFees").value = prcsFees;
 			document.getElementById("processingFeesGst").value = processingFeesGst;
 			document.getElementById("consultancyFeesGst").value = consultancyFeesGst;
 			var intrExpnse = document.getElementById("intrstExpns").value;
-			var renewExpnse = document.getElementById("renewExpns").value;
 			var prgsRptVal = document.getElementById("prgsRpt").value;
 			var valRptVal = document.getElementById("valRptVal").value;
-			
-        	var sum = Number(prcsFees) + Number(intrExpnse) + Number(renewExpnse) + Number(hypothection) + Number(mortgageAmnt) + Number(prgsRptVal) + Number(valRptVal) + Number(processingFeesGst) + Number(consultancyFees) + Number(consultancyFeesGst);
-        	
+         	var sum = Number(prcsFees) + Number(intrExpnse) + Number(renewExpnse) + Number(hypothection) + Number(mortgageAmnt) + Number(prgsRptVal) + Number(valRptVal) + Number(processingFeesGst) + Number(consultancyFees) + Number(consultancyFeesGst);
 			document.getElementById("totalAmnt").value = sum.toFixed(2);
         }
         
         function bankdetails(){
         	debugger;
-        	var data ="${bankList}";
+        	var iterable ="${bankList}";
+        	var bankId = document.getElementById("bankId").value;
+        	var data = new Array();     
+            <c:forEach items="${bankList}" var="bank" varStatus="loop">
+            	if(bankId == "${bank.bankId}")
+            	{
+            		document.getElementById("minimumCapitalClause").value = "${bank.minimumCapitalClause}";
+            		document.getElementById("furtherDisbursement").value = "${bank.furtherDisbursement}";
+            		document.getElementById("possibilitiesofDisbursementAmount").value = "${bank.possibilitiesofDisbursementAmount}";
+            	}
+            	else if(bankId == "")
+            	{
+            		document.getElementById("minimumCapitalClause").value = "";
+            		document.getElementById("furtherDisbursement").value = "";
+            		document.getElementById("possibilitiesofDisbursementAmount").value = "";
+
+            	}
+            </c:forEach>
         }
     </script>
 </body>

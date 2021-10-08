@@ -79,6 +79,14 @@ textarea, select {
 	outline: none;
 }
 
+.inputclass{
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 20px;
+	border: 1px solid #1c87c9;
+	outline: none;
+}
+
 .contact-form button {
 	width: 100%;
 	padding: 10px;
@@ -182,8 +190,8 @@ button:hover {
 					
 						<!-- <input type="number" name="bankId" hidden="true">  -->
 						<span>Bank Name</span> 
-						<input type="text" id="bankName" name="bankName" required="required"/>
-					<br>
+						<input type="text" id="bankName" name="bankName" required="required" class="inputclass"/>
+					<br><br>
 					<span>Minimum Capital Clause</span>
 					<div>
 						<textarea rows="4" name="minimumCapitalClause" required="required"></textarea>
