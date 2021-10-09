@@ -98,7 +98,20 @@ public class BankComparison implements Serializable {
 	
 	@Column(name = "loanStartDate")
 	private String loanStartDate;
+	
+	@Column(name = "moratoriumPeriodStartDate")
+	private String moratoriumPeriodStartDate;
 
+	@Column(name = "moratoriumPeriodEndDate")
+	private String moratoriumPeriodEndDate;
+	
+	@Column(name = "repaymentPeriodStartDate")
+	private String repaymentPeriodStartDate;
+	
+	@Column(name = "repaymentPeriodEndDate")
+	private String repaymentPeriodEndDate;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -318,16 +331,36 @@ public class BankComparison implements Serializable {
 		this.consultancyFeesGst = consultancyFeesGst;
 	}
 
-	@Override
-	public String toString() {
-		return "BankComparison [id=" + id + ", customerId=" + customerId + ", bankId=" + bankId + ", loanAmount="
-				+ loanAmount + ", processingFees=" + processingFees + ", processingFeesPer=" + processingFeesPer
-				+ ", interestRate=" + interestRate + ", interestExpense=" + interestExpense + ", renewalFees="
-				+ renewalFees + ", renewalExpenses=" + renewalExpenses + ", hypothecation=" + hypothecation
-				+ ", mortgageCharges=" + mortgageCharges + ", progressReport=" + progressReport + ", collateral="
-				+ collateral + ", collateralPer=" + collateralPer + ", valuationReport=" + valuationReport
-				+ ", totalExpenses=" + totalExpenses + ", minimumCapitalClause=" + minimumCapitalClause
-				+ ", furtherDisbursement=" + furtherDisbursement + ", possibilitiesofDisbursementAmount="
-				+ possibilitiesofDisbursementAmount + "]";
+	public String getMoratoriumPeriodStartDate() {
+		return moratoriumPeriodStartDate;
 	}
+
+	public void setMoratoriumPeriodStartDate(String moratoriumPeriodStartDate) {
+		this.moratoriumPeriodStartDate = moratoriumPeriodStartDate;
+	}
+
+	public String getMoratoriumPeriodEndDate() {
+		return moratoriumPeriodEndDate;
+	}
+
+	public void setMoratoriumPeriodEndDate(String moratoriumPeriodEndDate) {
+		this.moratoriumPeriodEndDate = moratoriumPeriodEndDate;
+	}
+
+	public String getRepaymentPeriodStartDate() {
+		return repaymentPeriodStartDate;
+	}
+
+	public void setRepaymentPeriodStartDate(String repaymentPeriodStartDate) {
+		this.repaymentPeriodStartDate = repaymentPeriodStartDate;
+	}
+
+	public String getRepaymentPeriodEndDate() {
+		return repaymentPeriodEndDate;
+	}
+
+	public void setRepaymentPeriodEndDate(String repaymentPeriodEndDate) {
+		this.repaymentPeriodEndDate = repaymentPeriodEndDate;
+	}
+
 }

@@ -2,9 +2,10 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
-<head><%@ page isELIgnored="false"%>
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Ratnaafin</title>
 <%-- <link href="<c:url value="/resources/css/bootstrap.min.css" />"
@@ -296,57 +297,41 @@ button:hover {
 					</tr>
 				</table>
 				<br><br>
-					<button class="button" data-modal="fieldformfixed" hidden="true" id="Fixed">Add</button>
+					<button class="button" data-modal="addMoritoriumRepyamnetfixed" hidden="true" id="Fixed">Add</button>
 					<button class="button" data-modal="fieldformadvance" hidden="true" id="advance">Add</button>
 			</div>
 		</div>
 	</div>
 
-	<div id="fieldformfixed" class="modal">
+
+	<div id="addMoritoriumRepyamnetfixed" class="modal">
 		<div class="modal-content">
 			<div class="contact-form">
 				<span class="close">&times;</span>
 
-				<form:form action="/bankcomparisoninterest/bankInterest/saveFixedInterest"
+				<form:form action="/bankcomparisoninterest/bankInterest/saveDate"
 					cssClass="form-horizontal" method="post"> 
 					<h3 align="center">Interest Calculation Form</h3>
-						<input type="number" name="collectionAmnt" value="0" hidden="true" />
-						<input type="text" name="interestType" value="Fixed" hidden="true" />
 						<input type="number" name="customerId" hidden="true"
 									value="${bankInterestMasterDetails.customerId}" />
 						<input type="number" name="comparisonId" hidden="true"
 									value="${bankInterestMasterDetails.comparisonId}" />
-						<input type="number" id="loanTenure" value="${loanTenure}" hidden="true"/>
-						<table>
-							<tr>
-								<th>Month Ending On</th>
-								<th>Principal Amount</th>
-								<th>Repayment to Bank</th>
-							</tr>
-							
-							<c:forEach var="tempCustomer" items="${interestSequenceDate}" varStatus="theCount">
-							<tr>
+									
+						<label style="font-weight: bold;">Moratorium Period Start Date</label> 
+						<input type="date" name="moratoriumPeriodStartDate" id="moratoriumPeriodStartDate" required="required"> <br>
+						<label style="font-weight: bold;">Moratorium Period End Date</label> 
+						<input type="date" name="moratoriumPeriodEndDate" id="moratoriumPeriodEndDate" oninput="getNextDate();" required="required"> <br>
+						<label style="font-weight: bold;">Repayment Period Start Date</label> 
+						<input type="date" name="repaymentPeriodStartDate" id="repaymentPeriodStartDate" readonly="readonly"> <br>
+						<label style="font-weight: bold;">Repayment Period End Date</label> 
+						<input type="date" name="repaymentPeriodEndDate" id="repaymentPeriodEndDate" required="required"> <br>
 						
-							<td><input type="date" value="${tempCustomer}" name="monthEndingOn" required="required"/></td>
-							<td><input type="number" id="addPrincipleAmt[${theCount.index}]" name="principleAmountforInterest" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="getInputValue();"/></td>
-       						<td><input type="number" id="addRepaymentAmt[${theCount.index}]" name="repaymentToBank" onfocus="focusData(this)" onblur="blurData(this)" value="0" oninput="getInputValue();"/> <input type="number" name="advancedCollection" hidden="true" value="0" /></td>
-       						
-       						</tr>
-       						
-						</c:forEach>
-						 <tr>
-								<td></td>
-								<td><input type="number" name="principleAmtTotal" id="principleAmtTotal" required="required" /></td>
-								<td><input type="number" name="repaymentAmtTotal" id="repaymentAmtTotal" required="required"/></td>
-							</tr>
-						</table>
-						
-					<br><br>
 					<button type="submit">Submit</button>
 				</form:form>
 			</div>
 		</div>
 	</div>
+	
 		<div id="fieldformadvance" class="modal">
 		<div class="modal-content">
 			<div class="contact-form">
@@ -383,7 +368,7 @@ button:hover {
 						<label style="font-weight: bold;">Loan Amount</label> 
 						<input type="number" name="loanAmount" id="advanceLoanAmount"
 							value="${bankComparison.loanAmount}" readonly="readonly"> <br>
-						<input type="number" id="loanTenure" value="${loanTenure}" hidden="true"/>
+						<input type="number" id="loanTenure" value="${loanTenure}" hidden="true"/><br>
 							
 						<span>Collection amount till Date</span>
 						<input type="number" name="collectionAmnt" onfocus="focusData(this)" onblur="blurData(this)" id="collectionAmnt" oninput="cal()" required="required"/>
@@ -437,8 +422,15 @@ button:hover {
 					<h3 align="center">Interest Calculation Form</h3>
 						<input type="number" name="collectionAmnt" value="0" hidden="true" />
 						<input type="text" name="interestType" value="Fixed" hidden="true" />
-						
-					<div>
+						<label style="font-weight: bold;">Moratorium Period Start Date</label> 
+						<input type="date" name="moratoriumPeriodStartDate" id="moratoriumPeriodStartDate" readonly="readonly"> <br>
+						<label style="font-weight: bold;">Moratorium Period End Date</label> 
+						<input type="date" name="moratoriumPeriodEndDate" id="moratoriumPeriodEndDate" readonly="readonly"> <br>
+						<label style="font-weight: bold;">Repayment Period Start Date</label> 
+						<input type="date" name="repaymentPeriodStartDate" id="repaymentPeriodStartDate" readonly="readonly"> <br>
+						<label style="font-weight: bold;">Repayment Period End Date</label> 
+						<input type="date" name="repaymentPeriodEndDate" id="repaymentPeriodEndDate" readonly="readonly"> <br>
+								<div>
 						<table>
 							<tr>
 								<td><input type="number" name="customerId" hidden="true"
@@ -936,5 +928,13 @@ window.onclick = function(event) {
         	 });
         	
        		}
+        
+        
+        function getNextDate(){
+        	debugger;
+        	var d = new Date(document.getElementById("moratoriumPeriodEndDate").value);
+        	var repayment = new Date(d.setMonth(d.getMonth() + 1));
+        	document.getElementById("repaymentPeriodStartDate").valueAsDate = repayment;
+        }
     </script>
 </html>

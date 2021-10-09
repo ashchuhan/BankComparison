@@ -73,4 +73,25 @@ public class BankInterestDAOImpl implements BankInterestDAO {
 			 currentSession.saveOrUpdate(CutbackDetail);
 		}
 	}
+
+	@Override
+	public void addMoratoriumRepayment(String moratoriumPeriodStartDate, String moratoriumPeriodEndDate,
+			String repaymentPeriodStartDate, String repaymentPeriodEndDate,Long comparisonId) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+
+		String hqlUpdate = "update BankComparison c set c.moratoriumPeriodStartDate = :moratoriumPeriodStartDate , c.moratoriumPeriodEndDate = :moratoriumPeriodEndDate, c.repaymentPeriodStartDate = :repaymentPeriodStartDate , c.repaymentPeriodEndDate =:repaymentPeriodEndDate where c.id = :comparisonId";
+		
+		@SuppressWarnings("deprecation")
+		int updatedEntities = session.createQuery( hqlUpdate )
+				.setString("moratoriumPeriodStartDate", moratoriumPeriodStartDate)
+				.setString("moratoriumPeriodEndDate", moratoriumPeriodEndDate)
+				.setString("repaymentPeriodStartDate", repaymentPeriodStartDate)
+				.setString("repaymentPeriodEndDate", repaymentPeriodEndDate)
+				.setLong( "comparisonId", comparisonId )
+		        .executeUpdate();
+		tx.commit();
+		session.close();
+		
+	}
 }

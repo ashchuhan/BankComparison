@@ -1,12 +1,11 @@
-
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
-<head><%@ page isELIgnored="false"%>
+<head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Ratnaafin</title>
 <%-- <link href="<c:url value="/resources/css/bootstrap.min.css" />"
@@ -336,7 +335,6 @@ button:hover {
 		<div class="modal-content">
 			<div class="contact-form">
 				<span class="close">&times;</span>
-
 				<form:form action="save" cssClass="form-horizontal" method="post"
 					modelAttribute="bankcomparison">
 					<h3>Comparison Form</h3>
@@ -536,7 +534,6 @@ button:hover {
         	debugger;
         	var iterable ="${bankList}";
         	var bankId = document.getElementById("bankId").value;
-        	var data = new Array();     
             <c:forEach items="${bankList}" var="bank" varStatus="loop">
             	if(bankId == "${bank.bankId}")
             	{

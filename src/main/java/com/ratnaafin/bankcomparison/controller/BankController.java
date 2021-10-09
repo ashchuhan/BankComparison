@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class BankController {
     }
 	
 	@PostMapping("/save")
-	public String saveCustomer(@ModelAttribute("bank") BankMaster bank) {
+	public String saveBank(@ModelAttribute("bank") BankMaster bank) {
 		//String bankName = (bank.getBankName().toLowerCase()).replaceAll("\\s", "");
 		List<BankMaster> bankMasters = bankService.getBankList();
 		boolean flag = false;
@@ -43,7 +44,22 @@ public class BankController {
 		{
 			bankService.saveBank(bank);
 		}
-		return Content("<script language='javascript' type='text/javascript'>alert('Thanks for Feedback!');</script>");
+		//return Content("<script language='javascript' type='text/javascript'>alert('Thanks for Feedback!');</script>");
 		return "bank";
 	}
+	
+	@GetMapping("/update")
+	public String updateBank(Model model) {
+		List<BankMaster> bankMasters = bankService.getBankList();
+		model.addAttribute("bankList", bankMasters);
+		return "updatebank";
+	}
+	
+
+	@PostMapping("/updatebank")
+	public String updatebank(@ModelAttribute("bank") BankMaster bank) {
+			bankService.saveBank(bank);
+		return "bank";
+	}
+	
 }

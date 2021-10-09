@@ -16,5 +16,8 @@ public interface BankInterestDAO {
 
 	public void saveCutback(List<CutbackDetails> cutbackDetails);
 
+	public void addMoratoriumRepayment(String moratoriumPeriodStartDate, String moratoriumPeriodEndDate,
+			String repaymentPeriodStartDate, String repaymentPeriodEndDate, Long comparisonId);
+
 
 }

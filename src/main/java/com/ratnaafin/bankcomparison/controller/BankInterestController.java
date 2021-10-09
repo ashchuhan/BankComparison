@@ -131,9 +131,29 @@ public class BankInterestController {
 			@RequestParam(value = "repaymentToBank") double[] repayBank,
 			@RequestParam(value = "advancedCollection") double[] advancedCollection,
 			@RequestParam(value = "collectionAmnt") double collectionAmnt,
-			@RequestParam(value = "interestType") String interestType) {
-		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType);
+			@RequestParam(value = "interestType") String interestType,
+			@RequestParam(value = "moratoriumPeriodStartDate") String moratoriumPeriodStartDate,
+			@RequestParam(value = "moratoriumPeriodEndDate") String moratoriumPeriodEndDate,
+			@RequestParam(value = "repaymentPeriodStartDate") String repaymentPeriodStartDate,
+			@RequestParam(value = "repaymentPeriodEndDate") String repaymentPeriodEndDate) {
+		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType, moratoriumPeriodStartDate, moratoriumPeriodEndDate, repaymentPeriodEndDate, repaymentPeriodEndDate);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
+	}
+	
+	@PostMapping("/saveDate")
+	public String saveDate(@RequestParam(value = "customerId") Long customerId,
+			@RequestParam(value = "comparisonId") Long comparisonId,
+			@RequestParam(value = "moratoriumPeriodStartDate") String moratoriumPeriodStartDate,
+			@RequestParam(value = "moratoriumPeriodEndDate") String moratoriumPeriodEndDate,
+			@RequestParam(value = "repaymentPeriodStartDate") String repaymentPeriodStartDate,
+			@RequestParam(value = "repaymentPeriodEndDate") String repaymentPeriodEndDate,Model model) {
+		BankInterestMaster bankInterestMaster1 = new BankInterestMaster();
+		bankInterestMaster1.setCustomerId(customerId);
+		bankInterestMaster1.setComparisonId(comparisonId);
+		model.addAttribute("bankInterestMasterDetails", bankInterestMaster1);
+
+		bankinterestservice.addMoratoriumRepayment(moratoriumPeriodStartDate, moratoriumPeriodEndDate, repaymentPeriodStartDate, repaymentPeriodEndDate,comparisonId);
+		return "fixedinterest";
 	}
 	
 	@GetMapping("/delete")
@@ -186,7 +206,11 @@ public class BankInterestController {
 			@RequestParam(value = "repaymentToBank") double[] repayBank,
 			@RequestParam(value = "advancedCollection") double[] advancedCollection,
 			@RequestParam(value = "collectionAmnt") double collectionAmnt,
-			@RequestParam(value = "interestType") String interestType)
+			@RequestParam(value = "interestType") String interestType,
+			@RequestParam(value = "moratoriumPeriodStartDate") String moratoriumPeriodStartDate,
+			@RequestParam(value = "moratoriumPeriodEndDate") String moratoriumPeriodEndDate,
+			@RequestParam(value = "repaymentPeriodStartDate") String repaymentPeriodStartDate,
+			@RequestParam(value = "repaymentPeriodEndDate") String repaymentPeriodEndDate)
 	{
 		List<BankInterestMaster> bankInterestMaster = bankinterestservice.getBankInterest(customerId, comparisonId);
 		Double totalIntr = 0.0;
@@ -196,7 +220,7 @@ public class BankInterestController {
 			}
 		}
 		deleteInterest(comparisonId, customerId, totalIntr);
-		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType);
+		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType,moratoriumPeriodStartDate,moratoriumPeriodEndDate,repaymentPeriodStartDate,repaymentPeriodEndDate);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
 		
 	}
@@ -228,7 +252,7 @@ public class BankInterestController {
 	}
 	
 	public void saveBankfixedInterest(Long customerId, Long comparisonId, String[] date, double[] principalAmnt,
-			double[] repayBank, double[] advancedCollection, double collectionAmnt, String interestType) {
+			double[] repayBank, double[] advancedCollection, double collectionAmnt, String interestType, String moratoriumPeriodStartDate, String moratoriumPeriodEndDate, String repaymentPeriodStartDate, String repaymentPeriodEndDate) {
 		List<BankInterestMaster> list = new ArrayList<BankInterestMaster>();
 		BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
 		double balance = 0;
@@ -263,6 +287,7 @@ public class BankInterestController {
 		totalExpense = Double.parseDouble(new DecimalFormat("##.##").format(totalExpense));
 		totalInterest = Double.parseDouble(new DecimalFormat("##.##").format(totalInterest));
 		bankinterestservice.updateTotalInterest(totalInterest, comparisonId, total, collectionAmnt);
+		
 	}
 	
 	public void saveBankAdvanceInterest(Long customerId, Long comparisonId, String[] date, double[] principalAmnt,

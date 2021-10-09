@@ -48,4 +48,12 @@ public class BankInterestServiceImpl implements BankInterestService {
 		bankInterestDAO.saveCutback(cutbackDetails);
 	}
 
+	@Transactional
+	@Override
+	public void addMoratoriumRepayment(String moratoriumPeriodStartDate, String moratoriumPeriodEndDate,
+			String repaymentPeriodStartDate, String repaymentPeriodEndDate, Long comparisonId) {
+		bankInterestDAO.addMoratoriumRepayment(moratoriumPeriodStartDate, moratoriumPeriodEndDate, repaymentPeriodStartDate, repaymentPeriodEndDate,comparisonId);
+		
+	}
+
 }
