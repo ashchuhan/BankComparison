@@ -1,6 +1,7 @@
 package com.ratnaafin.bankcomparison.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,56 +31,56 @@ public class BankComparison implements Serializable {
 	private String bankName;
 
 	@Column(name = "loanAmount")
-	private Double loanAmount;
+	private BigDecimal loanAmount;
 
 	@Column(name = "processingFees")
-	private Double processingFees;
+	private BigDecimal processingFees;
 	
 	@Column(name = "processingFeesPer")
-	private Double processingFeesPer;
+	private BigDecimal processingFeesPer;
 	
 	@Column(name = "processingFeesGst")
-	private Double processingFeesGst;
+	private BigDecimal processingFeesGst;
 	
 	@Column(name = "consultancyFees")
-	private Double consultancyFees;
+	private BigDecimal consultancyFees;
 	
 	@Column(name = "consultancyFeesGst")
-	private Double consultancyFeesGst;
+	private BigDecimal consultancyFeesGst;
 	
 	
 	@Column(name = "interestRate")
-	private Double interestRate;
+	private BigDecimal interestRate;
 	
 	@Column(name = "interestExpense")
-	private Double interestExpense;
+	private BigDecimal interestExpense;
 
 	@Column(name = "renewalFees")
-	private Double renewalFees;
+	private BigDecimal renewalFees;
 	
 	@Column(name = "renewalExpenses")
-	private Double renewalExpenses;
+	private BigDecimal renewalExpenses;
 	
 	@Column(name = "hypothecation")
-	private Double hypothecation;
+	private BigDecimal hypothecation;
 	
 	@Column(name = "mortgageCharges")
-	private Double mortgageCharges;
+	private BigDecimal mortgageCharges;
 
 	@Column(name = "progressReport")
-	private Double progressReport;
+	private BigDecimal progressReport;
 	
 	@Column(name = "collateral")
 	private String collateral;
 	
 	@Column(name = "collateralPer")
-	private Double collateralPer;
+	private BigDecimal collateralPer;
 	
 	@Column(name = "valuationReport")
-	private Double valuationReport;
+	private BigDecimal valuationReport;
 	
 	@Column(name = "totalExpenses")
-	private Double totalExpenses;
+	private BigDecimal totalExpenses;
 	
 	@Column(name = "minimumCapitalClause")
 	private String minimumCapitalClause;
@@ -91,10 +92,10 @@ public class BankComparison implements Serializable {
 	private String possibilitiesofDisbursementAmount;
 	
 	@Column(name = "collectionAmnt")
-	private Double collectionAmnt;
+	private BigDecimal collectionAmnt;
 	
 	@Column(name = "loanTenure")
-	private Double loanTenure;
+	private BigDecimal loanTenure;
 	
 	@Column(name = "loanStartDate")
 	private String loanStartDate;
@@ -128,83 +129,83 @@ public class BankComparison implements Serializable {
 		this.bankId = bankId;
 	}
 
-	public Double getLoanAmount() {
+	public BigDecimal getLoanAmount() {
 		return loanAmount;
 	}
 
-	public void setLoanAmount(Double loanAmount) {
+	public void setLoanAmount(BigDecimal loanAmount) {
 		this.loanAmount = loanAmount;
 	}
 
-	public Double getProcessingFees() {
+	public BigDecimal getProcessingFees() {
 		return processingFees;
 	}
 
-	public void setProcessingFees(Double processingFees) {
+	public void setProcessingFees(BigDecimal processingFees) {
 		this.processingFees = processingFees;
 	}
 
-	public Double getProcessingFeesPer() {
+	public BigDecimal getProcessingFeesPer() {
 		return processingFeesPer;
 	}
 
-	public void setProcessingFeesPer(Double processingFeesPer) {
+	public void setProcessingFeesPer(BigDecimal processingFeesPer) {
 		this.processingFeesPer = processingFeesPer;
 	}
 
-	public Double getInterestRate() {
+	public BigDecimal getInterestRate() {
 		return interestRate;
 	}
 
-	public void setInterestRate(Double interestRate) {
+	public void setInterestRate(BigDecimal interestRate) {
 		this.interestRate = interestRate;
 	}
 
-	public Double getInterestExpense() {
+	public BigDecimal getInterestExpense() {
 		return interestExpense;
 	}
 
-	public void setInterestExpense(Double interestExpense) {
+	public void setInterestExpense(BigDecimal interestExpense) {
 		this.interestExpense = interestExpense;
 	}
 
-	public Double getRenewalFees() {
+	public BigDecimal getRenewalFees() {
 		return renewalFees;
 	}
 
-	public void setRenewalFees(Double renewalFees) {
+	public void setRenewalFees(BigDecimal renewalFees) {
 		this.renewalFees = renewalFees;
 	}
 
-	public Double getRenewalExpenses() {
+	public BigDecimal getRenewalExpenses() {
 		return renewalExpenses;
 	}
 
-	public void setRenewalExpenses(Double renewalExpenses) {
+	public void setRenewalExpenses(BigDecimal renewalExpenses) {
 		this.renewalExpenses = renewalExpenses;
 	}
 
-	public Double getHypothecation() {
+	public BigDecimal getHypothecation() {
 		return hypothecation;
 	}
 
-	public void setHypothecation(Double hypothecation) {
+	public void setHypothecation(BigDecimal hypothecation) {
 		this.hypothecation = hypothecation;
 	}
 
-	public Double getMortgageCharges() {
+	public BigDecimal getMortgageCharges() {
 		return mortgageCharges;
 	}
 
-	public void setMortgageCharges(Double mortgageCharges) {
+	public void setMortgageCharges(BigDecimal mortgageCharges) {
 		this.mortgageCharges = mortgageCharges;
 	}
 
-	public Double getProgressReport() {
+	public BigDecimal getProgressReport() {
 		return progressReport;
 	}
 
-	public void setProgressReport(Double progressReport) {
+	public void setProgressReport(BigDecimal progressReport) {
 		this.progressReport = progressReport;
 	}
 
@@ -216,27 +217,27 @@ public class BankComparison implements Serializable {
 		this.collateral = collateral;
 	}
 
-	public Double getCollateralPer() {
+	public BigDecimal getCollateralPer() {
 		return collateralPer;
 	}
 
-	public void setCollateralPer(Double collateralPer) {
+	public void setCollateralPer(BigDecimal collateralPer) {
 		this.collateralPer = collateralPer;
 	}
 
-	public Double getValuationReport() {
+	public BigDecimal getValuationReport() {
 		return valuationReport;
 	}
 
-	public void setValuationReport(Double valuationReport) {
+	public void setValuationReport(BigDecimal valuationReport) {
 		this.valuationReport = valuationReport;
 	}
 
-	public Double getTotalExpenses() {
+	public BigDecimal getTotalExpenses() {
 		return totalExpenses;
 	}
 
-	public void setTotalExpenses(Double totalExpenses) {
+	public void setTotalExpenses(BigDecimal totalExpenses) {
 		this.totalExpenses = totalExpenses;
 	}
 
@@ -280,21 +281,21 @@ public class BankComparison implements Serializable {
 		this.bankName = bankName;
 	}
 
-	public Double getCollectionAmnt() {
+	public BigDecimal getCollectionAmnt() {
 		return collectionAmnt;
 	}
 
-	public void setCollectionAmnt(Double collectionAmnt) {
+	public void setCollectionAmnt(BigDecimal collectionAmnt) {
 		this.collectionAmnt = collectionAmnt;
 	}
 
 	
 	
-	public Double getLoanTenure() {
+	public BigDecimal getLoanTenure() {
 		return loanTenure;
 	}
 
-	public void setLoanTenure(Double loanTenure) {
+	public void setLoanTenure(BigDecimal loanTenure) {
 		this.loanTenure = loanTenure;
 	}
 
@@ -307,27 +308,27 @@ public class BankComparison implements Serializable {
 	}
 
 	
-	public Double getProcessingFeesGst() {
+	public BigDecimal getProcessingFeesGst() {
 		return processingFeesGst;
 	}
 
-	public void setProcessingFeesGst(Double processingFeesGst) {
+	public void setProcessingFeesGst(BigDecimal processingFeesGst) {
 		this.processingFeesGst = processingFeesGst;
 	}
 
-	public Double getConsultancyFees() {
+	public BigDecimal getConsultancyFees() {
 		return consultancyFees;
 	}
 
-	public void setConsultancyFees(Double consultancyFees) {
+	public void setConsultancyFees(BigDecimal consultancyFees) {
 		this.consultancyFees = consultancyFees;
 	}
 
-	public Double getConsultancyFeesGst() {
+	public BigDecimal getConsultancyFeesGst() {
 		return consultancyFeesGst;
 	}
 
-	public void setConsultancyFeesGst(Double consultancyFeesGst) {
+	public void setConsultancyFeesGst(BigDecimal consultancyFeesGst) {
 		this.consultancyFeesGst = consultancyFeesGst;
 	}
 

@@ -1,5 +1,7 @@
 package com.ratnaafin.bankcomparison.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "MORTGAGE")
 public class Mortgage {
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -18,16 +21,16 @@ public class Mortgage {
     private Long mortgageId;
 	
 	@Column(name = "mortgageFromAmt")
-    private Double mortgageFromAmt;
+    private BigDecimal mortgageFromAmt;
 	
 	@Column(name = "mortgageToAmt")
-    private Double mortgageToAmt;
+    private BigDecimal mortgageToAmt;
 	
 	@Column(name = "mortgageCharges")
-    private Double mortgageCharges;
+    private BigDecimal mortgageCharges;
 	
 	@Column(name = "mortgageMaximunAmtCharges")
-    private Double mortgageMaximunAmtCharges;
+    private BigDecimal mortgageMaximunAmtCharges;
 
 	public Long getMortgageId() {
 		return mortgageId;
@@ -37,35 +40,35 @@ public class Mortgage {
 		this.mortgageId = mortgageId;
 	}
 
-	public Double getMortgageFromAmt() {
+	public BigDecimal getMortgageFromAmt() {
 		return mortgageFromAmt;
 	}
 
-	public void setMortgageFromAmt(Double mortgageFromAmt) {
+	public void setMortgageFromAmt(BigDecimal mortgageFromAmt) {
 		this.mortgageFromAmt = mortgageFromAmt;
 	}
 
-	public Double getMortgageToAmt() {
+	public BigDecimal getMortgageToAmt() {
 		return mortgageToAmt;
 	}
 
-	public void setMortgageToAmt(Double mortgageToAmt) {
+	public void setMortgageToAmt(BigDecimal mortgageToAmt) {
 		this.mortgageToAmt = mortgageToAmt;
 	}
 
-	public Double getMortgageCharges() {
+	public BigDecimal getMortgageCharges() {
 		return mortgageCharges;
 	}
 
-	public void setMortgageCharges(Double mortgageCharges) {
+	public void setMortgageCharges(BigDecimal mortgageCharges) {
 		this.mortgageCharges = mortgageCharges;
 	}
 
-	public Double getMortgageMaximunAmtCharges() {
+	public BigDecimal getMortgageMaximunAmtCharges() {
 		return mortgageMaximunAmtCharges;
 	}
 
-	public void setMortgageMaximunAmtCharges(Double mortgageMaximunAmtCharges) {
+	public void setMortgageMaximunAmtCharges(BigDecimal mortgageMaximunAmtCharges) {
 		this.mortgageMaximunAmtCharges = mortgageMaximunAmtCharges;
 	}
 

@@ -1,6 +1,7 @@
 package com.ratnaafin.bankcomparison.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,22 +30,22 @@ public class BankInterestMaster implements Serializable {
 	private String monthEndingOn;
 	
 	@Column(name = "principleAmountforInterest")
-	private Double principleAmountforInterest;
+	private BigDecimal principleAmountforInterest;
 	
 	@Column(name = "advancedCollection")
-	private Double advancedCollection;
+	private BigDecimal advancedCollection;
 	
 	@Column(name = "cumulativeCollection")
-	private Double cumulativeCollection;
+	private BigDecimal cumulativeCollection;
 	
 	@Column(name = "repaymentToBank")
-	private Double repaymentToBank;
+	private BigDecimal repaymentToBank;
 	
 	@Column(name = "balanceOutsatanding")
-	private Double balanceOutsatanding;
+	private BigDecimal balanceOutsatanding;
 	
 	@Column(name = "interest")
-	private Double interest;
+	private BigDecimal interest;
 	
 	@Column(name = "interestType")
 	private String interestType;
@@ -81,52 +82,52 @@ public class BankInterestMaster implements Serializable {
 		this.monthEndingOn = monthEndingOn;
 	}
 
-	public Double getPrincipleAmountforInterest() {
+	public BigDecimal getPrincipleAmountforInterest() {
 		return principleAmountforInterest;
 	}
 
-	public void setPrincipleAmountforInterest(Double principleAmountforInterest) {
+	public void setPrincipleAmountforInterest(BigDecimal principleAmountforInterest) {
 		this.principleAmountforInterest = principleAmountforInterest;
 	}
 
-	public Double getRepaymentToBank() {
+	public BigDecimal getRepaymentToBank() {
 		return repaymentToBank;
 	}
 
-	public void setRepaymentToBank(Double repaymentToBank) {
+	public void setRepaymentToBank(BigDecimal repaymentToBank) {
 		this.repaymentToBank = repaymentToBank;
 	}
 
-	public Double getBalanceOutsatanding() {
+	public BigDecimal getBalanceOutsatanding() {
 		return balanceOutsatanding;
 	}
 
-	public void setBalanceOutsatanding(Double balanceOutsatanding) {
+	public void setBalanceOutsatanding(BigDecimal balanceOutsatanding) {
 		this.balanceOutsatanding = balanceOutsatanding;
 	}
 
 	
-	public Double getAdvancedCollection() {
+	public BigDecimal getAdvancedCollection() {
 		return advancedCollection;
 	}
 
-	public void setAdvancedCollection(Double advancedCollection) {
+	public void setAdvancedCollection(BigDecimal advancedCollection) {
 		this.advancedCollection = advancedCollection;
 	}
 
-	public Double getCumulativeCollection() {
+	public BigDecimal getCumulativeCollection() {
 		return cumulativeCollection;
 	}
 
-	public void setCumulativeCollection(Double cumulativeCollection) {
+	public void setCumulativeCollection(BigDecimal cumulativeCollection) {
 		this.cumulativeCollection = cumulativeCollection;
 	}
 
-	public Double getInterest() {
+	public BigDecimal getInterest() {
 		return interest;
 	}
 
-	public void setInterest(Double interest) {
+	public void setInterest(BigDecimal interest) {
 		this.interest = interest;
 	}
 

@@ -3,6 +3,7 @@ package com.ratnaafin.bankcomparison.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,8 +14,11 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -57,25 +61,18 @@ public class BankInterestController {
 	@Autowired
 	private CutbackService cutbackService;
 
-
 	@GetMapping("/list/{customerId}/{comparisonId}")
 	public String userForm(@PathVariable("customerId") Long customerId, @PathVariable("comparisonId") Long comparisonId, Model model)
 	{
-		
-		
-		
 		BankInterestMaster bankInterestMaster1 = new BankInterestMaster();
 		bankInterestMaster1.setCustomerId(customerId);
 		bankInterestMaster1.setComparisonId(comparisonId);
 		model.addAttribute("bankInterestMasterDetails", bankInterestMaster1);
-		
 		BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
 		model.addAttribute("bankComparison", bankComparison);
-		
-		
 		if(bankComparison != null)
 		{
-			Double loanTenure = bankComparison.getLoanTenure();
+			BigDecimal loanTenure = bankComparison.getLoanTenure();
 			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	        String date = bankComparison.getLoanStartDate();
 	        LocalDate startDate = LocalDate.parse(date, dateFormat);
@@ -83,8 +80,7 @@ public class BankInterestController {
 	        //startDate = startDate.withMonth(startMonth).withDayOfMonth(1);
 	        LocalDate currentDateStart = startDate;
 	        List<String> interestSequenceDate = new ArrayList<>();
-	        
-	        for(int i=0;i<loanTenure;i++)
+	        for(int i=0;i<loanTenure.doubleValue();i++)
 	        {
 	        	interestSequenceDate.add(currentDateStart.format(dateFormat));
 	        	currentDateStart = currentDateStart.plusMonths(1);
@@ -92,10 +88,7 @@ public class BankInterestController {
 	        System.err.println(interestSequenceDate);
 	        model.addAttribute("interestSequenceDate", interestSequenceDate);
 	        model.addAttribute("loanTenure", loanTenure);
-	        
 		}
-		
-		
 		BankMaster bankMaster = (BankMaster) bankService.getBankByID(bankComparison.getBankId());
 		model.addAttribute("bankMaster", bankMaster); 
 		
@@ -105,17 +98,17 @@ public class BankInterestController {
 		List<CutbackDetails> cutbackDetails = cutbackService.getCutbackDetails(comparisonId);
 		model.addAttribute("cutbackDetails", cutbackDetails);
 		
-		Double totalPrincipalAmnt = 0.0, totalRepaymentAmnt = 0.0, totalIntr = 0.0;
+		BigDecimal totalPrincipalAmnt = BigDecimal.ZERO, totalRepaymentAmnt = BigDecimal.ZERO, totalIntr = BigDecimal.ZERO;
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
 				totalPrincipalAmnt = totalPrincipalAmnt + bankInterestMaster2.getPrincipleAmountforInterest();
 				totalRepaymentAmnt = totalRepaymentAmnt + bankInterestMaster2.getRepaymentToBank();
 				totalIntr = totalIntr + bankInterestMaster2.getInterest();
-			}
+				}
 		}
 		model.addAttribute("totalPrincipalAmnt", totalPrincipalAmnt);
 		model.addAttribute("totalRepaymentAmnt", totalRepaymentAmnt);
-		totalIntr = Double.parseDouble(new DecimalFormat("##.##").format(totalIntr));
+		totalIntr = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalIntr));
 		model.addAttribute("totalIntr", totalIntr);
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 		String interestType = bankInterestMaster.get(0).getInterestType();
@@ -127,16 +120,12 @@ public class BankInterestController {
 	public String saveFixedInterest(@RequestParam(value = "customerId") Long customerId,
 			@RequestParam(value = "comparisonId") Long comparisonId,
 			@RequestParam(value = "monthEndingOn") String[] date,
-			@RequestParam(value = "principleAmountforInterest") double[] principalAmnt,
-			@RequestParam(value = "repaymentToBank") double[] repayBank,
-			@RequestParam(value = "advancedCollection") double[] advancedCollection,
-			@RequestParam(value = "collectionAmnt") double collectionAmnt,
-			@RequestParam(value = "interestType") String interestType,
-			@RequestParam(value = "moratoriumPeriodStartDate") String moratoriumPeriodStartDate,
-			@RequestParam(value = "moratoriumPeriodEndDate") String moratoriumPeriodEndDate,
-			@RequestParam(value = "repaymentPeriodStartDate") String repaymentPeriodStartDate,
-			@RequestParam(value = "repaymentPeriodEndDate") String repaymentPeriodEndDate) {
-		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType, moratoriumPeriodStartDate, moratoriumPeriodEndDate, repaymentPeriodEndDate, repaymentPeriodEndDate);
+			@RequestParam(value = "principleAmountforInterest") BigDecimal[] principalAmnt,
+			@RequestParam(value = "repaymentToBank") BigDecimal[] repayBank,
+			@RequestParam(value = "advancedCollection") BigDecimal[] advancedCollection,
+			@RequestParam(value = "collectionAmnt") BigDecimal collectionAmnt,
+			@RequestParam(value = "interestType") String interestType) {
+		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
 	}
 	
@@ -147,22 +136,55 @@ public class BankInterestController {
 			@RequestParam(value = "moratoriumPeriodEndDate") String moratoriumPeriodEndDate,
 			@RequestParam(value = "repaymentPeriodStartDate") String repaymentPeriodStartDate,
 			@RequestParam(value = "repaymentPeriodEndDate") String repaymentPeriodEndDate,Model model) {
+		bankinterestservice.addMoratoriumRepayment(moratoriumPeriodStartDate, moratoriumPeriodEndDate, repaymentPeriodStartDate, repaymentPeriodEndDate,comparisonId);
+		BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
+		model.addAttribute("bankComparison", bankComparison);
 		BankInterestMaster bankInterestMaster1 = new BankInterestMaster();
 		bankInterestMaster1.setCustomerId(customerId);
 		bankInterestMaster1.setComparisonId(comparisonId);
 		model.addAttribute("bankInterestMasterDetails", bankInterestMaster1);
-
-		bankinterestservice.addMoratoriumRepayment(moratoriumPeriodStartDate, moratoriumPeriodEndDate, repaymentPeriodStartDate, repaymentPeriodEndDate,comparisonId);
+		
+		long monthsBetweenMoratoriumPeriod = ChronoUnit.MONTHS.between(
+				LocalDate.parse(moratoriumPeriodStartDate).withDayOfMonth(1),
+	            LocalDate.parse(moratoriumPeriodEndDate).withDayOfMonth(1));
+		
+		long monthsBetweenRepaymentPeriod = ChronoUnit.MONTHS.between(
+				LocalDate.parse(repaymentPeriodStartDate).withDayOfMonth(1),
+	            LocalDate.parse(repaymentPeriodEndDate).withDayOfMonth(1));
+		
+		model.addAttribute("monthsBetweenMoratoriumPeriod", monthsBetweenMoratoriumPeriod);
+		model.addAttribute("monthsBetweenRepaymentPeriod", monthsBetweenRepaymentPeriod);
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    LocalDate moratoriumStartDate = LocalDate.parse(moratoriumPeriodStartDate, dateFormat);
+	    LocalDate repaymentStartDate = LocalDate.parse(repaymentPeriodStartDate, dateFormat);
+	    List<String> moratoriumPeriodSequenceDate = new ArrayList<>();
+	    List<String> repaymentPeriodSequenceDate = new ArrayList<>();
+	    for(int i=0;i<=monthsBetweenMoratoriumPeriod;i++)
+	    {
+	    	moratoriumPeriodSequenceDate.add(moratoriumStartDate.format(dateFormat));
+	    	moratoriumStartDate = moratoriumStartDate.plusMonths(1);
+	    }
+	    model.addAttribute("moratoriumPeriodSequenceDate", moratoriumPeriodSequenceDate);
+	    model.addAttribute("monthsBetweenRepaymentPeriod", monthsBetweenRepaymentPeriod);
+	   
+	    for(int i=0;i<=monthsBetweenRepaymentPeriod;i++)
+	    {
+	    	repaymentPeriodSequenceDate.add(repaymentStartDate.format(dateFormat));
+	    	repaymentStartDate = repaymentStartDate.plusMonths(1);
+	    }
+	    model.addAttribute("repaymentPeriodSequenceDate", repaymentPeriodSequenceDate);
+	    BigDecimal repaymentcalculate = (bankComparison.getLoanAmount()/(BigDecimal) (monthsBetweenRepaymentPeriod+1));
+	    repaymentcalculate = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(repaymentcalculate));
+	    model.addAttribute("repaymentcalculate", repaymentcalculate);	
 		return "fixedinterest";
 	}
 	
 	@GetMapping("/delete")
-    public String deleteInterest(@RequestParam("comparisonId") Long comparisonId, @RequestParam("customerId") Long customerId, @RequestParam("totalInterest") Double totalInterest) {
+    public String deleteInterest(@RequestParam("comparisonId") Long comparisonId, @RequestParam("customerId") Long customerId, @RequestParam("totalInterest") BigDecimal totalInterest) {
 		List<BankInterestMaster> bankInterestMaster = bankinterestservice.getBankInterest(customerId, comparisonId);
 		List<CutbackDetails> cutbackDetails = cutbackService.getCutbackDetails(comparisonId);
 		if(cutbackDetails != null && cutbackDetails.size() > 0) {
-			for(CutbackDetails cutbackDetail : cutbackDetails)
-			{
+			for(CutbackDetails cutbackDetail : cutbackDetails){
 				cutbackService.deleteCutbackDetails(cutbackDetail.getId());
 			}
 		}
@@ -170,30 +192,28 @@ public class BankInterestController {
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
 				bankinterestservice.deleteBankInterest(bankInterestMaster2.getId());
-				Double totalInterestExpense = 0.00 ;
-				Double totalExpense =(bankComparison.getTotalExpenses()-totalInterest);
-				Double collectionAmnt = bankComparison.getCollectionAmnt();
+				BigDecimal totalInterestExpense = 0.00 ;
+				BigDecimal totalExpense =(bankComparison.getTotalExpenses()-totalInterest);
+				BigDecimal collectionAmnt = bankComparison.getCollectionAmnt();
 				bankinterestservice.updateTotalInterest(totalInterestExpense, comparisonId, totalExpense, collectionAmnt);
 			}
 		}
 		return "redirect:/bankInterest/list/"+customerId+"/"+comparisonId;
     }
 	
-	
 	@PostMapping("/saveAdvanceInterest")
 	public String saveAdvanceInterest(@RequestParam(value = "customerId") Long customerId,
 			@RequestParam(value = "comparisonId") Long comparisonId,
 			@RequestParam(value = "monthEndingOn") String[] date,
-			@RequestParam(value = "principleAmountforInterest") double[] principalAmnt,
-			@RequestParam(value = "repaymentToBank") double[] repayBank,
-			@RequestParam(value = "advancedCollection") double[] advancedCollection,
-			@RequestParam(value = "collectionAmnt") double collectionAmnt,
-			@RequestParam(value = "cumulativeCollection") double[] cumulativeCollection,
+			@RequestParam(value = "principleAmountforInterest") BigDecimal[] principalAmnt,
+			@RequestParam(value = "repaymentToBank") BigDecimal[] repayBank,
+			@RequestParam(value = "advancedCollection") BigDecimal[] advancedCollection,
+			@RequestParam(value = "collectionAmnt") BigDecimal collectionAmnt,
+			@RequestParam(value = "cumulativeCollection") BigDecimal[] cumulativeCollection,
 			@RequestParam(value = "interestType") String interestType,
-			@RequestParam(value = "cutbackFromAmount") double[] cutbackFromAmount,
-			@RequestParam(value = "cutbackToAmount") double[] cutbackToAmount,
-			@RequestParam(value = "cutbackRatio") double[] cutbackRatio) {
-		
+			@RequestParam(value = "cutbackFromAmount") BigDecimal[] cutbackFromAmount,
+			@RequestParam(value = "cutbackToAmount") BigDecimal[] cutbackToAmount,
+			@RequestParam(value = "cutbackRatio") BigDecimal[] cutbackRatio) {
 		saveBankAdvanceInterest(customerId, comparisonId, date, principalAmnt, repayBank,advancedCollection, collectionAmnt,cumulativeCollection, interestType, cutbackFromAmount, cutbackToAmount, cutbackRatio);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
 	}
@@ -202,45 +222,39 @@ public class BankInterestController {
 	public String updateFixedInterest(@RequestParam(value = "customerId") Long customerId,
 			@RequestParam(value = "comparisonId") Long comparisonId,
 			@RequestParam(value = "monthEndingOn") String[] date,
-			@RequestParam(value = "principleAmountforInterest") double[] principalAmnt,
-			@RequestParam(value = "repaymentToBank") double[] repayBank,
-			@RequestParam(value = "advancedCollection") double[] advancedCollection,
-			@RequestParam(value = "collectionAmnt") double collectionAmnt,
-			@RequestParam(value = "interestType") String interestType,
-			@RequestParam(value = "moratoriumPeriodStartDate") String moratoriumPeriodStartDate,
-			@RequestParam(value = "moratoriumPeriodEndDate") String moratoriumPeriodEndDate,
-			@RequestParam(value = "repaymentPeriodStartDate") String repaymentPeriodStartDate,
-			@RequestParam(value = "repaymentPeriodEndDate") String repaymentPeriodEndDate)
+			@RequestParam(value = "principleAmountforInterest") BigDecimal[] principalAmnt,
+			@RequestParam(value = "repaymentToBank") BigDecimal[] repayBank,
+			@RequestParam(value = "advancedCollection") BigDecimal[] advancedCollection,
+			@RequestParam(value = "collectionAmnt") BigDecimal collectionAmnt,
+			@RequestParam(value = "interestType") String interestType)
 	{
 		List<BankInterestMaster> bankInterestMaster = bankinterestservice.getBankInterest(customerId, comparisonId);
-		Double totalIntr = 0.0;
+		BigDecimal totalIntr = 0.0;
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
 				totalIntr = totalIntr + bankInterestMaster2.getInterest();
-			}
+				}
 		}
 		deleteInterest(comparisonId, customerId, totalIntr);
-		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType,moratoriumPeriodStartDate,moratoriumPeriodEndDate,repaymentPeriodStartDate,repaymentPeriodEndDate);
+		saveBankfixedInterest(customerId, comparisonId, date, principalAmnt, repayBank, advancedCollection, collectionAmnt, interestType);
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
-		
 	}
 	
 	@PostMapping("/updateAdvanceInterest")
 	public String updateAdvanceInterest(@RequestParam(value = "customerId") Long customerId,
 			@RequestParam(value = "comparisonId") Long comparisonId,
 			@RequestParam(value = "monthEndingOn") String[] date,
-			@RequestParam(value = "principleAmountforInterest") double[] principalAmnt,
-			@RequestParam(value = "repaymentToBank") double[] repayBank,
-			@RequestParam(value = "advancedCollection") double[] advancedCollection,
-			@RequestParam(value = "collectionAmnt") double collectionAmnt,
-			@RequestParam(value = "cumulativeCollection") double[] cumulativeCollection,
+			@RequestParam(value = "principleAmountforInterest") BigDecimal[] principalAmnt,
+			@RequestParam(value = "repaymentToBank") BigDecimal[] repayBank,
+			@RequestParam(value = "advancedCollection") BigDecimal[] advancedCollection,
+			@RequestParam(value = "collectionAmnt") BigDecimal collectionAmnt,
+			@RequestParam(value = "cumulativeCollection") BigDecimal[] cumulativeCollection,
 			@RequestParam(value = "interestType") String interestType,
-			@RequestParam(value = "cutbackFromAmount") double[] cutbackFromAmount,
-			@RequestParam(value = "cutbackToAmount") double[] cutbackToAmount,
-			@RequestParam(value = "cutbackRatio") double[] cutbackRatio) {
-		
+			@RequestParam(value = "cutbackFromAmount") BigDecimal[] cutbackFromAmount,
+			@RequestParam(value = "cutbackToAmount") BigDecimal[] cutbackToAmount,
+			@RequestParam(value = "cutbackRatio") BigDecimal[] cutbackRatio) {
 		List<BankInterestMaster> bankInterestMaster = bankinterestservice.getBankInterest(customerId, comparisonId);
-		Double totalIntr = 0.0;
+		BigDecimal totalIntr = 0.0;
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
 				totalIntr = totalIntr + bankInterestMaster2.getInterest();
@@ -251,13 +265,13 @@ public class BankInterestController {
 		return "redirect:/bankInterest/list/" + customerId + "/" + comparisonId;
 	}
 	
-	public void saveBankfixedInterest(Long customerId, Long comparisonId, String[] date, double[] principalAmnt,
-			double[] repayBank, double[] advancedCollection, double collectionAmnt, String interestType, String moratoriumPeriodStartDate, String moratoriumPeriodEndDate, String repaymentPeriodStartDate, String repaymentPeriodEndDate) {
+	public void saveBankfixedInterest(Long customerId, Long comparisonId, String[] date, BigDecimal[] principalAmnt,
+			BigDecimal[] repayBank, BigDecimal[] advancedCollection, BigDecimal collectionAmnt, String interestType) {
 		List<BankInterestMaster> list = new ArrayList<BankInterestMaster>();
 		BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
-		double balance = 0;
-		double totalInterest = 0;
-		double cumulativeCollection = 0;
+		BigDecimal balance = 0;
+		BigDecimal totalInterest = 0;
+		BigDecimal cumulativeCollection = 0;
 		for (int i = 0; i < date.length; i++) {
 			BankInterestMaster bankInterestMaster = new BankInterestMaster();
 			bankInterestMaster.setCustomerId(customerId);
@@ -269,30 +283,29 @@ public class BankInterestController {
 			bankInterestMaster.setAdvancedCollection(advancedCollection[i]);
 			bankInterestMaster.setCumulativeCollection(cumulativeCollection);
 
-			double balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
+			BigDecimal balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
+			balance_outsanding = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(balance_outsanding));
 			bankInterestMaster.setBalanceOutsatanding(balance_outsanding);
 			balance = balance_outsanding;
 
-			double interest = (balance_outsanding * (bankComparison.getInterestRate() / 100)) / 12;
-			interest = Double.parseDouble(new DecimalFormat("##.##").format(interest));
+			BigDecimal interest = (balance_outsanding * (bankComparison.getInterestRate() / 100)) / 12;
+			interest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(interest));
 			bankInterestMaster.setInterest(interest);
 			totalInterest = totalInterest + interest;
-
 			list.add(bankInterestMaster);
 		}
 		bankinterestservice.saveBankInterest(list);
-		double totalExpense = bankComparison.getTotalExpenses();
-		double total = totalExpense + totalInterest;
-		total = Double.parseDouble(new DecimalFormat("##.##").format(total));
-		totalExpense = Double.parseDouble(new DecimalFormat("##.##").format(totalExpense));
-		totalInterest = Double.parseDouble(new DecimalFormat("##.##").format(totalInterest));
+		BigDecimal totalExpense = bankComparison.getTotalExpenses();
+		BigDecimal total = totalExpense + totalInterest;
+		total = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(total));
+		totalExpense = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalExpense));
+		totalInterest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalInterest));
 		bankinterestservice.updateTotalInterest(totalInterest, comparisonId, total, collectionAmnt);
-		
 	}
 	
-	public void saveBankAdvanceInterest(Long customerId, Long comparisonId, String[] date, double[] principalAmnt,
-			double[] repayBank, double[] advancedCollection, double collectionAmnt, double[] cumulativeCollection, String interestType,
-			double[] cutbackFromAmount, double[] cutbackToAmount, double[] cutbackRatio) 
+	public void saveBankAdvanceInterest(Long customerId, Long comparisonId, String[] date, BigDecimal[] principalAmnt,
+			BigDecimal[] repayBank, BigDecimal[] advancedCollection, BigDecimal collectionAmnt, BigDecimal[] cumulativeCollection, String interestType,
+			BigDecimal[] cutbackFromAmount, BigDecimal[] cutbackToAmount, BigDecimal[] cutbackRatio) 
 	{
 		 List<CutbackDetails> cutbackList = new ArrayList<CutbackDetails>(); 
 		 for(int i=0; i < cutbackFromAmount.length; i++)
@@ -305,13 +318,12 @@ public class BankInterestController {
 			 cutbackList.add(cutbackDetails);
 		  }
 		 bankinterestservice.saveCutback(cutbackList);
-		 
 		 List<BankInterestMaster> bankMasterList = new ArrayList<BankInterestMaster>();
 		 BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
 		 List<CutbackDetails> cutbackDetails = cutbackService.getCutbackDetails(comparisonId);
-		 double balance = 0;
-		 double totalInterest = 0;
-		 //double cumulativeCollectionn= collectionAmnt;
+		 BigDecimal balance = 0;
+		 BigDecimal totalInterest = 0;
+		 //BigDecimal cumulativeCollectionn= collectionAmnt;
 		 for (int i = 0; i < date.length; i++) {
 				BankInterestMaster bankInterestMaster = new BankInterestMaster();
 				bankInterestMaster.setCustomerId(customerId);
@@ -324,22 +336,23 @@ public class BankInterestController {
 				bankInterestMaster.setCumulativeCollection(cumulativeCollection[i]);
 				bankInterestMaster.setRepaymentToBank(repayBank[i]);
 				
-				double balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
+				BigDecimal balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
+				balance_outsanding = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(balance_outsanding));
 				bankInterestMaster.setBalanceOutsatanding(balance_outsanding);
 				balance = balance_outsanding;
 
-				double interest = (balance_outsanding * (bankComparison.getInterestRate() / 100)) / 12;
-				interest = Double.parseDouble(new DecimalFormat("##.##").format(interest));
+				BigDecimal interest = (balance_outsanding * (bankComparison.getInterestRate() / 100)) / 12;
+				interest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(interest));
 				bankInterestMaster.setInterest(interest);
 				totalInterest = totalInterest + interest;
 				bankMasterList.add(bankInterestMaster);
 			}
 		 	bankinterestservice.saveBankInterest(bankMasterList);
-			double totalExpense = bankComparison.getTotalExpenses();
-			double total = totalExpense + totalInterest;
-			total = Double.parseDouble(new DecimalFormat("##.##").format(total));
-			totalExpense = Double.parseDouble(new DecimalFormat("##.##").format(totalExpense));
-			totalInterest = Double.parseDouble(new DecimalFormat("##.##").format(totalInterest));
+			BigDecimal totalExpense = bankComparison.getTotalExpenses();
+			BigDecimal total = totalExpense + totalInterest;
+			total = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(total));
+			totalExpense = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalExpense));
+			totalInterest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalInterest));
 			bankinterestservice.updateTotalInterest(totalInterest, comparisonId, total, collectionAmnt);
 	}
 	
@@ -358,34 +371,23 @@ public class BankInterestController {
     
     public void export(String table, Long customerId, Long comparisonId) {
         String jdbcURL = "jdbc:mysql://localhost:3306/bankcomparison?useSSL=false";
-        
         String username = "root";
         String password = "root";
- 
         String excelFilePath = getFileName(table.concat("_Export"+customerId));
- 
         try (Connection connection = DriverManager.getConnection(jdbcURL, username, password)) {
             String sql = "SELECT * FROM "+table+" WHERE customerId="+customerId+" AND comparisonId="+comparisonId;
- 
             Statement statement = connection.createStatement();
- 
             ResultSet result = statement.executeQuery(sql);
- 
             XSSFWorkbook workbook = new XSSFWorkbook();
             XSSFSheet sheet = workbook.createSheet(table);
- 
             writeHeaderLine(result, sheet);
- 
             writeDataLines(result, workbook, sheet);
- 
             File yourFile = new File("D:\\"+excelFilePath);
             yourFile.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(yourFile, false);
             workbook.write(outputStream);
-            
             workbook.close();
             statement.close();
- 
         } catch (SQLException e) {
             System.out.println("Datababse error:");
             e.printStackTrace();
@@ -399,9 +401,7 @@ public class BankInterestController {
         // write header line containing column names
         ResultSetMetaData metaData = result.getMetaData();
         int numberOfColumns = metaData.getColumnCount();
- 
         Row headerRow = sheet.createRow(0);
- 
         // exclude the first column which is the ID field
         for (int i = 2; i <= numberOfColumns; i++) {
             String columnName = metaData.getColumnName(i);
@@ -414,21 +414,16 @@ public class BankInterestController {
             throws SQLException {
         ResultSetMetaData metaData = result.getMetaData();
         int numberOfColumns = metaData.getColumnCount();
- 
         int rowCount = 1;
- 
         while (result.next()) {
             Row row = sheet.createRow(rowCount++);
- 
             for (int i = 2; i <= numberOfColumns; i++) {
                 Object valueObject = result.getObject(i);
- 
                 Cell cell = row.createCell(i - 2);
- 
                 if (valueObject instanceof Boolean)
                     cell.setCellValue((Boolean) valueObject);
-                else if (valueObject instanceof Double)
-                    cell.setCellValue((double) valueObject);
+                else if (valueObject instanceof BigDecimal)
+                    cell.setCellValue((BigDecimal) valueObject);
                 else if (valueObject instanceof Long)
                     cell.setCellValue((Long) valueObject);
                 else if (valueObject instanceof Float)
@@ -437,9 +432,7 @@ public class BankInterestController {
                     cell.setCellValue((Date) valueObject);
                     formatDateCell(workbook, cell);
                 } else cell.setCellValue((String) valueObject);
- 
             }
- 
         }
     }
     

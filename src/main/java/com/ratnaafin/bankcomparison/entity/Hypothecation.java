@@ -1,5 +1,7 @@
 package com.ratnaafin.bankcomparison.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "HYPOTHECATION")
 public class Hypothecation {
+@SuppressWarnings("unused")
 private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -18,16 +21,16 @@ private static final long serialVersionUID = 1L;
     private Long hypothecationId;
 	
 	@Column(name = "hypothecationFromAmt")
-    private Double hypothecationFromAmt;
+    private BigDecimal hypothecationFromAmt;
 	
 	@Column(name = "hypothecationToAmt")
-    private Double hypothecationToAmt;
+    private BigDecimal hypothecationToAmt;
 	
 	@Column(name = "hypothecationCharges")
-    private Double hypothecationCharges;
+    private BigDecimal hypothecationCharges;
 	
 	@Column(name = "hypothecationMaximunAmtCharges")
-    private Double hypothecationMaximunAmtCharges;
+    private BigDecimal hypothecationMaximunAmtCharges;
 
 	public Long getHypothecationId() {
 		return hypothecationId;
@@ -37,35 +40,35 @@ private static final long serialVersionUID = 1L;
 		this.hypothecationId = hypothecationId;
 	}
 
-	public Double getHypothecationFromAmt() {
+	public BigDecimal getHypothecationFromAmt() {
 		return hypothecationFromAmt;
 	}
 
-	public void setHypothecationFromAmt(Double hypothecationFromAmt) {
+	public void setHypothecationFromAmt(BigDecimal hypothecationFromAmt) {
 		this.hypothecationFromAmt = hypothecationFromAmt;
 	}
 
-	public Double getHypothecationToAmt() {
+	public BigDecimal getHypothecationToAmt() {
 		return hypothecationToAmt;
 	}
 
-	public void setHypothecationToAmt(Double hypothecationToAmt) {
+	public void setHypothecationToAmt(BigDecimal hypothecationToAmt) {
 		this.hypothecationToAmt = hypothecationToAmt;
 	}
 
-	public Double getHypothecationCharges() {
+	public BigDecimal getHypothecationCharges() {
 		return hypothecationCharges;
 	}
 
-	public void setHypothecationCharges(Double hypothecationCharges) {
+	public void setHypothecationCharges(BigDecimal hypothecationCharges) {
 		this.hypothecationCharges = hypothecationCharges;
 	}
 
-	public Double getHypothecationMaximunAmtCharges() {
+	public BigDecimal getHypothecationMaximunAmtCharges() {
 		return hypothecationMaximunAmtCharges;
 	}
 
-	public void setHypothecationMaximunAmtCharges(Double hypothecationMaximunAmtCharges) {
+	public void setHypothecationMaximunAmtCharges(BigDecimal hypothecationMaximunAmtCharges) {
 		this.hypothecationMaximunAmtCharges = hypothecationMaximunAmtCharges;
 	}
 

@@ -1,6 +1,7 @@
 package com.ratnaafin.bankcomparison.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,13 +24,13 @@ public class CutbackDetails implements Serializable {
 	private Long comparisonId;
 	
 	@Column(name = "cutbackFromAmount")
-	private Double cutbackFromAmount;
+	private BigDecimal cutbackFromAmount;
 	
 	@Column(name = "cutbackToAmount")
-	private Double cutbackToAmount;
+	private BigDecimal cutbackToAmount;
 	
 	@Column(name = "cutbackRatio")
-	private Double cutbackRatio;
+	private BigDecimal cutbackRatio;
 
 	public Long getId() {
 		return id;
@@ -47,27 +48,27 @@ public class CutbackDetails implements Serializable {
 		this.comparisonId = comparisonId;
 	}
 
-	public Double getCutbackFromAmount() {
+	public BigDecimal getCutbackFromAmount() {
 		return cutbackFromAmount;
 	}
 
-	public void setCutbackFromAmount(Double cutbackFromAmount) {
+	public void setCutbackFromAmount(BigDecimal cutbackFromAmount) {
 		this.cutbackFromAmount = cutbackFromAmount;
 	}
 
-	public Double getCutbackToAmount() {
+	public BigDecimal getCutbackToAmount() {
 		return cutbackToAmount;
 	}
 
-	public void setCutbackToAmount(Double cutbackToAmount) {
+	public void setCutbackToAmount(BigDecimal cutbackToAmount) {
 		this.cutbackToAmount = cutbackToAmount;
 	}
 
-	public Double getCutbackRatio() {
+	public BigDecimal getCutbackRatio() {
 		return cutbackRatio;
 	}
 
-	public void setCutbackRatio(Double cutbackRatio) {
+	public void setCutbackRatio(BigDecimal cutbackRatio) {
 		this.cutbackRatio = cutbackRatio;
 	}
 

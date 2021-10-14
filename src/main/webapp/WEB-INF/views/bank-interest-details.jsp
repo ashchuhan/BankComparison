@@ -173,6 +173,7 @@ button:hover {
 	width: 100%;
 }
 </style>
+
 <script></script>
 </head>
 <body>
@@ -310,7 +311,7 @@ button:hover {
 				<span class="close">&times;</span>
 
 				<form:form action="/bankcomparisoninterest/bankInterest/saveDate"
-					cssClass="form-horizontal" method="post"> 
+					cssClass="form-horizontal" method="post" onsubmit="return validate()"> 
 					<h3 align="center">Interest Calculation Form</h3>
 						<input type="number" name="customerId" hidden="true"
 									value="${bankInterestMasterDetails.customerId}" />
@@ -318,13 +319,18 @@ button:hover {
 									value="${bankInterestMasterDetails.comparisonId}" />
 									
 						<label style="font-weight: bold;">Moratorium Period Start Date</label> 
-						<input type="date" name="moratoriumPeriodStartDate" id="moratoriumPeriodStartDate" required="required"> <br>
+						<input type="date" name="moratoriumPeriodStartDate" id="moratoriumPeriodStartDate" required="required" oninput="getNextDate();"> <br>
+						
 						<label style="font-weight: bold;">Moratorium Period End Date</label> 
 						<input type="date" name="moratoriumPeriodEndDate" id="moratoriumPeriodEndDate" oninput="getNextDate();" required="required"> <br>
+						<span id="errorRepaymentPeriodStartDate"></span>
+						
 						<label style="font-weight: bold;">Repayment Period Start Date</label> 
 						<input type="date" name="repaymentPeriodStartDate" id="repaymentPeriodStartDate" readonly="readonly"> <br>
+						
 						<label style="font-weight: bold;">Repayment Period End Date</label> 
-						<input type="date" name="repaymentPeriodEndDate" id="repaymentPeriodEndDate" required="required"> <br>
+						<input type="date" name="repaymentPeriodEndDate" id="repaymentPeriodEndDate" required="required" oninput="getNextDateRepaymentPeriod();"> <br>
+						<span id="errorRepaymentPeriodEndDate"></span>
 						
 					<button type="submit">Submit</button>
 				</form:form>
@@ -422,14 +428,18 @@ button:hover {
 					<h3 align="center">Interest Calculation Form</h3>
 						<input type="number" name="collectionAmnt" value="0" hidden="true" />
 						<input type="text" name="interestType" value="Fixed" hidden="true" />
+						
 						<label style="font-weight: bold;">Moratorium Period Start Date</label> 
-						<input type="date" name="moratoriumPeriodStartDate" id="moratoriumPeriodStartDate" readonly="readonly"> <br>
+						<input type="date" name="moratoriumPeriodStartDate" id="moratoriumPeriodStartDate" readonly="readonly" value="${bankComparison.moratoriumPeriodStartDate}"> <br>
+						
 						<label style="font-weight: bold;">Moratorium Period End Date</label> 
-						<input type="date" name="moratoriumPeriodEndDate" id="moratoriumPeriodEndDate" readonly="readonly"> <br>
+						<input type="date" name="moratoriumPeriodEndDate" id="moratoriumPeriodEndDate" readonly="readonly" value="${bankComparison.moratoriumPeriodEndDate}"> <br>
+						
 						<label style="font-weight: bold;">Repayment Period Start Date</label> 
-						<input type="date" name="repaymentPeriodStartDate" id="repaymentPeriodStartDate" readonly="readonly"> <br>
+						<input type="date" name="repaymentPeriodStartDate" id="repaymentPeriodStartDate" readonly="readonly" value="${bankComparison.repaymentPeriodStartDate}"> <br>
+						
 						<label style="font-weight: bold;">Repayment Period End Date</label> 
-						<input type="date" name="repaymentPeriodEndDate" id="repaymentPeriodEndDate" readonly="readonly"> <br>
+						<input type="date" name="repaymentPeriodEndDate" id="repaymentPeriodEndDate" readonly="readonly" value="${bankComparison.repaymentPeriodEndDate}"> <br>
 								<div>
 						<table>
 							<tr>
@@ -460,7 +470,7 @@ button:hover {
 							</tr>
 						</table>
 					</div>
-					<button type="submit">Submit</button>
+					<button type="submit" >Submit</button>
 				</form:form>
 			</div>
 		</div>
@@ -932,9 +942,59 @@ window.onclick = function(event) {
         
         function getNextDate(){
         	debugger;
-        	var d = new Date(document.getElementById("moratoriumPeriodEndDate").value);
-        	var repayment = new Date(d.setMonth(d.getMonth() + 1));
-        	document.getElementById("repaymentPeriodStartDate").valueAsDate = repayment;
+        	
+        	var moratoriumPeriodStartDate = new Date(document.getElementById("moratoriumPeriodStartDate").value);
+        	moratoriumPeriodStartDate = new Date(moratoriumPeriodStartDate.setMonth(moratoriumPeriodStartDate.getMonth() + 1))
+        	var moratoriumPeriodEndDate = new Date(document.getElementById("moratoriumPeriodEndDate").value);
+        	
+        	if (moratoriumPeriodStartDate > moratoriumPeriodEndDate) {
+                alert("The Date must be Bigger than one month");
+                document.getElementById("repaymentPeriodStartDate").value= "";
+                return false;
+           }
+        	var repaymentPeriodStartDate = new Date(moratoriumPeriodEndDate.setMonth(moratoriumPeriodEndDate.getMonth() + 1));
+        	document.getElementById("repaymentPeriodStartDate").valueAsDate = repaymentPeriodStartDate;
+        }
+        
+        function getNextDateRepaymentPeriod(){
+        	var repaymentPeriodStartDate = new Date(document.getElementById("repaymentPeriodStartDate").value);
+        	var repaymentPeriodEndDate = new Date(document.getElementById("repaymentPeriodEndDate").value);
+        	repaymentPeriodStartDate = new Date(repaymentPeriodStartDate.setMonth(repaymentPeriodStartDate.getMonth() + 1))
+        	
+        	if (repaymentPeriodStartDate > repaymentPeriodEndDate) {
+                alert("The Date must be Bigger than one month");
+                return false;
+           }
+        	
+        }
+        
+        function validate() {
+        	debugger;
+            var errorRepaymentPeriodStartDate = document.getElementById("errorRepaymentPeriodStartDate")
+            if ((document.getElementById("repaymentPeriodStartDate").value) == "") 
+            {
+                // Changing HTML to draw attention
+                errorRepaymentPeriodStartDate.innerHTML = "<span style='color: red;'>"+
+                            "Please enter a valid date</span>"
+                return false;
+            } else {
+            	errorRepaymentPeriodStartDate.innerHTML = ""
+            		var repaymentPeriodStartDate = new Date(document.getElementById("repaymentPeriodStartDate").value);
+            	var repaymentPeriodEndDate = new Date(document.getElementById("repaymentPeriodEndDate").value);
+            	repaymentPeriodStartDate = new Date(repaymentPeriodStartDate.setMonth(repaymentPeriodStartDate.getMonth() + 1))
+            	              
+                var errorRepaymentPeriodEndDate = document.getElementById("errorRepaymentPeriodEndDate")
+                if (repaymentPeriodStartDate > repaymentPeriodEndDate) 
+                {
+                    // Changing HTML to draw attention
+                    errorRepaymentPeriodEndDate.innerHTML = "<span style='color: red;'>"+
+                                "Please enter a valid date</span>"
+                    return false;
+                } else {
+                	errorRepaymentPeriodEndDate.innerHTML = ""
+                }
+            }
+            
         }
     </script>
 </html>
