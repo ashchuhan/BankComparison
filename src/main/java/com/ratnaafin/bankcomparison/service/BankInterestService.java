@@ -1,5 +1,6 @@
 package com.ratnaafin.bankcomparison.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.ratnaafin.bankcomparison.entity.BankInterestMaster;
@@ -14,7 +15,7 @@ public interface BankInterestService {
 
 	public void deleteBankInterest(Long interestId);
 	
-	public void updateTotalInterest(double Total, Long comparisonId, double total1, double collectionAmnt);
+	public void updateTotalInterest(BigDecimal totalInterestExpense, Long comparisonId, BigDecimal totalExpense, BigDecimal collectionAmnt);
 	
 	public void saveCutback(List<CutbackDetails> cutbackDetails);
 

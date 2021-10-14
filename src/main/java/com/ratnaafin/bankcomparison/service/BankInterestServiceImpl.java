@@ -1,5 +1,6 @@
 package com.ratnaafin.bankcomparison.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class BankInterestServiceImpl implements BankInterestService {
 
 	@Transactional
 	@Override
-	public void updateTotalInterest(double Total, Long comparisonId, double total1, double collectionAmnt) {
-		bankInterestDAO.updateTotalInterest(Total,comparisonId, total1, collectionAmnt);
+	public void updateTotalInterest(BigDecimal totalInterestExpense, Long comparisonId, BigDecimal totalExpense, BigDecimal collectionAmnt) {
+		bankInterestDAO.updateTotalInterest(totalInterestExpense,comparisonId, totalExpense, collectionAmnt);
 		
 	}
 

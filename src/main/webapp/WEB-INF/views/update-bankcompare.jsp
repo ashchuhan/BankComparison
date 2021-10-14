@@ -146,7 +146,7 @@ button:hover {
 							<span>Bank Name</span>
 							<input type="number" name="bankId"  value="${bankMaster.bankId}" hidden="true">
 							<input type="text" name="bankName"  value="${bankMaster.bankName}" readonly="readonly">
-							<span>Loan amount upto (Rs. in lakh)</span>
+							<span>Loan amount</span>
 							<input type="number" id="loanAmnt" name="loanAmount" value="${bankComparisonUpdate.loanAmount}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Loan amount upto (Rs. in lakh)" required="required" oninput="getInputValue();"> 
 							
 							
@@ -159,13 +159,13 @@ button:hover {
 							<span>Processing Fees(%)</span> 
 							<input type="number" id="prcsFeesPer" name="processingFeesPer" value="${bankComparisonUpdate.processingFeesPer}" step="0.01" onKeyPress="if(this.value.length==5) return false;" placeholder="Processing Fees (%)" oninput="getInputValue();" required="required"> 
 							
-							<span>Processing Fees(Rs.in lakh)</span> 
+							<span>Processing Fees</span> 
 							<input type="number" id="prcsFees" name="processingFees" step="0.01" value="${bankComparisonUpdate.processingFees}" onKeyPress="if(this.value.length==10) return false;" placeholder="Processing Fees (Rs.in lakh)" readonly="readonly" value="0">
 							
 							<span>Processing Fees With GST</span> 
 							<input type="number" id="processingFeesGst" name="processingFeesGst" value="${bankComparisonUpdate.processingFeesGst}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Processing Fees With GST" value="0" readonly="readonly">
 							
-							<span>Consultancy Fees(Rs.in lakh)</span> 
+							<span>Consultancy Fees</span> 
 							<input type="number" id="consultancyFees" name="consultancyFees" value="${bankComparisonUpdate.consultancyFees}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Consultancy Fees (Rs.in lakh)" required="required" oninput="getInputValue();">
 							
 							<span>Consultancy Fees Gst</span> 
@@ -178,11 +178,11 @@ button:hover {
 							<input type="number" name="renewalFees" value="${bankComparisonUpdate.renewalFees}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Fees">
 							<span>Renewal Expenses</span> 
 							<input type="number" id="renewExpns" name="renewalExpenses" value="${bankComparisonUpdate.renewalExpenses}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Expenses" oninput="getInputValue();" required="required"> 
-							<span>Hypothecation (Rs. in lakh)</span> 
+							<span>Hypothecation</span> 
 							<input type="number" id="hypothction" name="hypothecation" value="${bankComparisonUpdate.hypothecation}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Hypothecation (Rs. in lakh)" oninput="getInputValue();"> 
-							<span>Mortgage Charges (Rs. in lakh)</span> 
+							<span>Mortgage Charges</span> 
 							<input type="number" id="mortgageAmnt" name="mortgageCharges" value="${bankComparisonUpdate.mortgageCharges}" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Mortgage Charges (Rs. in lakh)" oninput="getInputValue();" > 
-							<span>Progress Report on Quaterly Basis (Rs. in lakh)</span> 
+							<span>Progress Report on Quaterly Basis</span> 
 							<input type="number" id="prgsRpt" name="progressReport" value="${bankComparisonUpdate.progressReport}" step="0.01" onKeyPress="if(this.value.length==10) return false;" oninput="getInputValue();" placeholder="Progress Report on Quaterly Basis of Rs. 5000/- (3 years project plan, so 12 quarters) (Rs. in lakh)">
 							<span>Collateral</span> 
 							<select id="coltrl" name="collateral">

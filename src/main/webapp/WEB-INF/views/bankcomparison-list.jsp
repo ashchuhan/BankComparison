@@ -163,7 +163,7 @@ button:hover {
 				</thead>
 				<tbody>
 					<tr>
-						<td>Loan amount upto (Rs. in lakh)</td>
+						<td>Loan amount</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.loanAmount}</td>
 						</c:forEach>
@@ -187,7 +187,7 @@ button:hover {
 						</c:forEach>
 					</tr>
 					<tr>
-						<td>Processing Fees (Rs.in lakh)</td>
+						<td>Processing Fees</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.processingFees}</td>
 						</c:forEach>
@@ -206,7 +206,7 @@ button:hover {
 						</c:forEach>
 					</tr>
 					<tr>
-						<td>Consultancy Fees(Rs.in lakh)</td>
+						<td>Consultancy Fees</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.consultancyFees}</td>
 
@@ -220,7 +220,7 @@ button:hover {
 						</c:forEach>
 					</tr>
 					<tr>
-						<td>Interest Expense (Rs. in lakh)</td>
+						<td>Interest Expense</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.interestExpense}</td>
 						</c:forEach>
@@ -238,13 +238,13 @@ button:hover {
 						</c:forEach>
 					</tr>
 					<tr>
-						<td>Hypothecation (Rs. in lakh)</td>
+						<td>Hypothecation</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.hypothecation}</td>
 						</c:forEach>
 					</tr>
 					<tr>
-						<td>Mortgage Charges (Rs. in lakh)</td>
+						<td>Mortgage Charges</td>
 						<c:forEach var="tempCustomer" items="${bankComparison}">
 							<td>${tempCustomer.mortgageCharges}</td>
 						</c:forEach>
@@ -348,7 +348,7 @@ button:hover {
 								<option value="${tempCustomer1.bankId}" >${tempCustomer1.bankName}</option>
 							</c:forEach>
 							</select> 
-							<span>Loan amount upto (Rs. in lakh)</span>
+							<span>Loan amount</span>
 							<input type="text" id="loanAmnt" name="loanAmount" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Loan amount upto (Rs. in lakh)" required="required" oninput="getInputValue(); numberToEnglish()"> 
 							<span id="error"></span>
 							<span>Loan Tenure in Months</span>
@@ -360,13 +360,13 @@ button:hover {
 							<span>Processing Fees(%)</span> 
 							<input type="number" id="prcsFeesPer" name="processingFeesPer" step="0.01" onKeyPress="if(this.value.length==5) return false;" placeholder="Processing Fees (%)" oninput="getInputValue();" required="required"> 
 							
-							<span>Processing Fees(Rs.in lakh)</span> 
+							<span>Processing Fees</span> 
 							<input type="number" id="prcsFees" name="processingFees" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Processing Fees (Rs.in lakh)" readonly="readonly" value="0">
 							
 							<span>Processing Fees GST</span> 
 							<input type="number" id="processingFeesGst" name="processingFeesGst" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Processing Fees With GST" value="0" readonly="readonly">
 							
-							<span>Consultancy Fees(Rs.in lakh)</span> 
+							<span>Consultancy Fees</span> 
 							<input type="number" id="consultancyFees" name="consultancyFees" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Consultancy Fees (Rs.in lakh)" required="required" oninput="getInputValue();">
 							
 							<span>Consultancy Fees Gst</span> 
@@ -379,11 +379,11 @@ button:hover {
 							<input type="number" id="renewFees" name="renewalFees" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Fees" required="required" oninput="getInputValue();">
 							<span>Renewal Expenses</span> 
 							<input type="number" id="renewExpns" name="renewalExpenses" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Renewal Expenses" oninput="getInputValue();" onfocus="value=''" onblur="if(this.value=='')this.value='0'"  value="0"> 
-							<span>Hypothecation (Rs. in lakh)</span> 
+							<span>Hypothecation</span> 
 							<input type="number" id="hypothction" name="hypothecation" step="0.01" onKeyPress="if(this.value.length==10) return false;" onfocus="value=''" onblur="if(this.value=='')this.value='0'"  value="0" placeholder="Hypothecation (Rs. in lakh)" oninput="getInputValue();"> 
-							<span>Mortgage Charges (Rs. in lakh)</span> 
+							<span>Mortgage Charges</span> 
 							<input type="number" id="mortgageAmnt" name="mortgageCharges" step="0.01" onKeyPress="if(this.value.length==10) return false;" placeholder="Mortgage Charges (Rs. in lakh)" oninput="getInputValue();" onfocus="value=''" onblur="if(this.value=='')this.value='0'"  value="0">  
-							<span>Progress Report on Quaterly Basis (Rs. in lakh)</span> 
+							<span>Progress Report on Quaterly Basis</span> 
 							<input type="number" id="prgsRpt" name="progressReport" step="0.01" onfocus="value=''" onblur="if(this.value=='')this.value='0'"  value="0" onKeyPress="if(this.value.length==10) return false;" oninput="getInputValue();" placeholder="Progress Report on Quaterly Basis of Rs. 5000/- (3 years project plan, so 12 quarters) (Rs. in lakh)">
 							<span>Collateral</span> 
 							<select id="coltrl" name="collateral">
@@ -392,7 +392,7 @@ button:hover {
 							</select> 
 							<span id="coltrlPer" style="visibility: hidden; ">Collateral(%)</span> 
 							<input type="hidden" id="coltrlPerVal" name="collateralPer" step="0.01" onKeyPress="if(this.value.length==5) return false;" placeholder="Collateral (%)" value="0"> 
-							<span id="valRpt" style="visibility: hidden;">Valuation Report & Title Report charges of Collateral Security (Rs. in lakh)</span> 
+							<span id="valRpt" style="visibility: hidden;">Valuation Report & Title Report charges of Collateral Security</span> 
 							<input type="hidden" id="valRptVal" name="valuationReport" step="0.01" onKeyPress="if(this.value.length==10) return false;" value="0" oninput="getInputValue();" placeholder="Valuation Report & Title Report charges of Collateral Security (Rs. in lakh)">
 							<span>Total Expenses</span> <input type="number" step="0.01" id="totalAmnt" name="totalExpenses" placeholder="Total Expenses" value="0">
 					</div>

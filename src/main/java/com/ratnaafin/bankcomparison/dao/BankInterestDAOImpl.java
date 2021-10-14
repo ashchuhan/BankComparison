@@ -1,5 +1,6 @@
 package com.ratnaafin.bankcomparison.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -49,18 +50,18 @@ public class BankInterestDAOImpl implements BankInterestDAO {
 	}
 
 	@Override
-	public void updateTotalInterest(double total, Long comparisonId, double total1, double collectionAmnt) {
+	public void updateTotalInterest(BigDecimal totalInterestExpense, Long comparisonId, BigDecimal totalExpense, BigDecimal collectionAmnt) {
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 
-		String hqlUpdate = "update BankComparison c set c.interestExpense = :total , c.collectionAmnt = :collectionAmnt , c.totalExpenses =:total1 where c.id = :comparisonId";
+		String hqlUpdate = "update BankComparison c set c.interestExpense = :totalInterestExpense , c.collectionAmnt = :collectionAmnt , c.totalExpenses =:totalExpense where c.id = :comparisonId";
 		
 		@SuppressWarnings("deprecation")
 		int updatedEntities = session.createQuery( hqlUpdate )
-		        .setDouble("total",total )
-		        .setDouble("total1", total1)
+		        .setBigDecimal("totalInterestExpense",totalInterestExpense )
+		        .setBigDecimal("totalExpense", totalExpense)
 		        .setLong( "comparisonId", comparisonId )
-		        .setDouble("collectionAmnt", collectionAmnt)
+		        .setBigDecimal("collectionAmnt", collectionAmnt)
 		        .executeUpdate();
 		tx.commit();
 		session.close();

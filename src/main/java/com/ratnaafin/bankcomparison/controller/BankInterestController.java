@@ -101,14 +101,14 @@ public class BankInterestController {
 		BigDecimal totalPrincipalAmnt = BigDecimal.ZERO, totalRepaymentAmnt = BigDecimal.ZERO, totalIntr = BigDecimal.ZERO;
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
-				totalPrincipalAmnt = totalPrincipalAmnt + bankInterestMaster2.getPrincipleAmountforInterest();
-				totalRepaymentAmnt = totalRepaymentAmnt + bankInterestMaster2.getRepaymentToBank();
-				totalIntr = totalIntr + bankInterestMaster2.getInterest();
+				totalPrincipalAmnt = totalPrincipalAmnt.add(bankInterestMaster2.getPrincipleAmountforInterest());
+				totalRepaymentAmnt = totalRepaymentAmnt.add(bankInterestMaster2.getRepaymentToBank());
+				totalIntr = totalIntr.add(bankInterestMaster2.getInterest());
 				}
 		}
 		model.addAttribute("totalPrincipalAmnt", totalPrincipalAmnt);
 		model.addAttribute("totalRepaymentAmnt", totalRepaymentAmnt);
-		totalIntr = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalIntr));
+		totalIntr = totalIntr.setScale(2, BigDecimal.ROUND_HALF_UP);
 		model.addAttribute("totalIntr", totalIntr);
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 		String interestType = bankInterestMaster.get(0).getInterestType();
@@ -173,8 +173,8 @@ public class BankInterestController {
 	    	repaymentStartDate = repaymentStartDate.plusMonths(1);
 	    }
 	    model.addAttribute("repaymentPeriodSequenceDate", repaymentPeriodSequenceDate);
-	    BigDecimal repaymentcalculate = (bankComparison.getLoanAmount()/(BigDecimal) (monthsBetweenRepaymentPeriod+1));
-	    repaymentcalculate = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(repaymentcalculate));
+	    BigDecimal repaymentcalculate = (bankComparison.getLoanAmount().divide(new BigDecimal(monthsBetweenRepaymentPeriod+1)));
+	    repaymentcalculate = repaymentcalculate.setScale(2, BigDecimal.ROUND_HALF_UP);
 	    model.addAttribute("repaymentcalculate", repaymentcalculate);	
 		return "fixedinterest";
 	}
@@ -192,8 +192,8 @@ public class BankInterestController {
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
 				bankinterestservice.deleteBankInterest(bankInterestMaster2.getId());
-				BigDecimal totalInterestExpense = 0.00 ;
-				BigDecimal totalExpense =(bankComparison.getTotalExpenses()-totalInterest);
+				BigDecimal totalInterestExpense = BigDecimal.ZERO ;
+				BigDecimal totalExpense =(bankComparison.getTotalExpenses().subtract(totalInterest));
 				BigDecimal collectionAmnt = bankComparison.getCollectionAmnt();
 				bankinterestservice.updateTotalInterest(totalInterestExpense, comparisonId, totalExpense, collectionAmnt);
 			}
@@ -229,10 +229,10 @@ public class BankInterestController {
 			@RequestParam(value = "interestType") String interestType)
 	{
 		List<BankInterestMaster> bankInterestMaster = bankinterestservice.getBankInterest(customerId, comparisonId);
-		BigDecimal totalIntr = 0.0;
+		BigDecimal totalIntr = BigDecimal.ZERO;
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
-				totalIntr = totalIntr + bankInterestMaster2.getInterest();
+				totalIntr = totalIntr.add(bankInterestMaster2.getInterest());
 				}
 		}
 		deleteInterest(comparisonId, customerId, totalIntr);
@@ -254,10 +254,10 @@ public class BankInterestController {
 			@RequestParam(value = "cutbackToAmount") BigDecimal[] cutbackToAmount,
 			@RequestParam(value = "cutbackRatio") BigDecimal[] cutbackRatio) {
 		List<BankInterestMaster> bankInterestMaster = bankinterestservice.getBankInterest(customerId, comparisonId);
-		BigDecimal totalIntr = 0.0;
+		BigDecimal totalIntr = BigDecimal.ZERO;
 		if(bankInterestMaster != null && bankInterestMaster.size() > 0) {
 			for (BankInterestMaster bankInterestMaster2 : bankInterestMaster) {
-				totalIntr = totalIntr + bankInterestMaster2.getInterest();
+				totalIntr = totalIntr.add(bankInterestMaster2.getInterest());
 			}
 		}
 		deleteInterest(comparisonId, customerId, totalIntr);
@@ -269,9 +269,9 @@ public class BankInterestController {
 			BigDecimal[] repayBank, BigDecimal[] advancedCollection, BigDecimal collectionAmnt, String interestType) {
 		List<BankInterestMaster> list = new ArrayList<BankInterestMaster>();
 		BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
-		BigDecimal balance = 0;
-		BigDecimal totalInterest = 0;
-		BigDecimal cumulativeCollection = 0;
+		BigDecimal balance = BigDecimal.ZERO;
+		BigDecimal totalInterest = BigDecimal.ZERO;
+		BigDecimal cumulativeCollection = BigDecimal.ZERO;
 		for (int i = 0; i < date.length; i++) {
 			BankInterestMaster bankInterestMaster = new BankInterestMaster();
 			bankInterestMaster.setCustomerId(customerId);
@@ -283,23 +283,23 @@ public class BankInterestController {
 			bankInterestMaster.setAdvancedCollection(advancedCollection[i]);
 			bankInterestMaster.setCumulativeCollection(cumulativeCollection);
 
-			BigDecimal balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
-			balance_outsanding = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(balance_outsanding));
+			BigDecimal balance_outsanding = ((principalAmnt[i].add(balance)).subtract(repayBank[i]));
+			balance_outsanding = balance_outsanding.setScale(2, BigDecimal.ROUND_HALF_UP);
 			bankInterestMaster.setBalanceOutsatanding(balance_outsanding);
 			balance = balance_outsanding;
 
-			BigDecimal interest = (balance_outsanding * (bankComparison.getInterestRate() / 100)) / 12;
-			interest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(interest));
+			BigDecimal interest =(balance_outsanding.multiply((bankComparison.getInterestRate().divide(new BigDecimal(100))))).divide(new BigDecimal(12));
+			interest = interest.setScale(2, BigDecimal.ROUND_HALF_UP);
 			bankInterestMaster.setInterest(interest);
-			totalInterest = totalInterest + interest;
+			totalInterest = totalInterest.add(interest) ;
 			list.add(bankInterestMaster);
 		}
 		bankinterestservice.saveBankInterest(list);
 		BigDecimal totalExpense = bankComparison.getTotalExpenses();
-		BigDecimal total = totalExpense + totalInterest;
-		total = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(total));
-		totalExpense = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalExpense));
-		totalInterest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalInterest));
+		BigDecimal total = totalExpense.add(totalInterest);
+		total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+		totalExpense = totalExpense.setScale(2, BigDecimal.ROUND_HALF_UP);
+		totalInterest = totalInterest.setScale(2, BigDecimal.ROUND_HALF_UP);
 		bankinterestservice.updateTotalInterest(totalInterest, comparisonId, total, collectionAmnt);
 	}
 	
@@ -321,8 +321,8 @@ public class BankInterestController {
 		 List<BankInterestMaster> bankMasterList = new ArrayList<BankInterestMaster>();
 		 BankComparison bankComparison = bankComparisonService.getBankComparison(comparisonId);
 		 List<CutbackDetails> cutbackDetails = cutbackService.getCutbackDetails(comparisonId);
-		 BigDecimal balance = 0;
-		 BigDecimal totalInterest = 0;
+		 BigDecimal balance = BigDecimal.ZERO;
+		 BigDecimal totalInterest = BigDecimal.ZERO;
 		 //BigDecimal cumulativeCollectionn= collectionAmnt;
 		 for (int i = 0; i < date.length; i++) {
 				BankInterestMaster bankInterestMaster = new BankInterestMaster();
@@ -336,23 +336,23 @@ public class BankInterestController {
 				bankInterestMaster.setCumulativeCollection(cumulativeCollection[i]);
 				bankInterestMaster.setRepaymentToBank(repayBank[i]);
 				
-				BigDecimal balance_outsanding = ((principalAmnt[i] + balance) - repayBank[i]);
-				balance_outsanding = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(balance_outsanding));
+				BigDecimal balance_outsanding = ((principalAmnt[i].add(balance)).subtract(repayBank[i]));
+				balance_outsanding = balance_outsanding.setScale(2, BigDecimal.ROUND_HALF_UP);
 				bankInterestMaster.setBalanceOutsatanding(balance_outsanding);
 				balance = balance_outsanding;
 
-				BigDecimal interest = (balance_outsanding * (bankComparison.getInterestRate() / 100)) / 12;
-				interest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(interest));
+				BigDecimal interest = (balance_outsanding.multiply((bankComparison.getInterestRate().divide(new BigDecimal(100))))).divide(new BigDecimal(12));
+				interest = interest.setScale(2, BigDecimal.ROUND_HALF_UP);
 				bankInterestMaster.setInterest(interest);
-				totalInterest = totalInterest + interest;
+				totalInterest = totalInterest.add(interest);
 				bankMasterList.add(bankInterestMaster);
 			}
 		 	bankinterestservice.saveBankInterest(bankMasterList);
 			BigDecimal totalExpense = bankComparison.getTotalExpenses();
-			BigDecimal total = totalExpense + totalInterest;
-			total = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(total));
-			totalExpense = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalExpense));
-			totalInterest = BigDecimal.parseBigDecimal(new DecimalFormat("##.##").format(totalInterest));
+			BigDecimal total = totalExpense.add(totalInterest);
+			total = total.setScale(2, BigDecimal.ROUND_HALF_UP);
+			totalExpense = totalExpense.setScale(2, BigDecimal.ROUND_HALF_UP);
+			totalInterest = totalInterest.setScale(2, BigDecimal.ROUND_HALF_UP);
 			bankinterestservice.updateTotalInterest(totalInterest, comparisonId, total, collectionAmnt);
 	}
 	
@@ -422,8 +422,8 @@ public class BankInterestController {
                 Cell cell = row.createCell(i - 2);
                 if (valueObject instanceof Boolean)
                     cell.setCellValue((Boolean) valueObject);
-                else if (valueObject instanceof BigDecimal)
-                    cell.setCellValue((BigDecimal) valueObject);
+                else if (valueObject instanceof Double)
+                    cell.setCellValue((double) valueObject);
                 else if (valueObject instanceof Long)
                     cell.setCellValue((Long) valueObject);
                 else if (valueObject instanceof Float)
